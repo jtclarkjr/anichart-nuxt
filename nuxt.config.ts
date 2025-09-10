@@ -87,6 +87,6 @@ export default defineNuxtConfig({
 
   // TypeScript configuration
   typescript: {
-    typeCheck: true
+    typeCheck: false // need to add vue-tsc dep for prod build when true
   }
 })
