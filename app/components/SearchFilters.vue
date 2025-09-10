@@ -1,12 +1,7 @@
 <template>
   <div class="search-filters">
     <div class="search-section">
-      <input
-        v-model="searchModel"
-        type="text"
-        placeholder="Search anime..."
-        class="search-input"
-      >
+      <input v-model="searchModel" type="text" placeholder="Search anime..." class="search-input" />
     </div>
     <div class="filters">
       <select v-model="sortModel" class="filter-select" @change="handleFilterChange">
@@ -44,7 +39,6 @@ interface Emits {
 
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
-
 
 // Available seasons based on current time of year
 const availableSeasons = computed(() => {
@@ -102,12 +96,10 @@ const searchModel = computed({
   set: (value: string) => emit('update:searchQuery', value)
 })
 
-
 // Event handler for filter changes
 const handleFilterChange = () => {
   emit('filterChange')
 }
-
 </script>
 
 <style scoped lang="scss">

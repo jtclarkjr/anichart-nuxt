@@ -87,6 +87,6 @@ export default defineNuxtConfig({
 
   // TypeScript configuration
   typescript: {
-    typeCheck: false
+    typeCheck: true
   }
 })

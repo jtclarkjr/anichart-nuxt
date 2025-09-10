@@ -10,8 +10,8 @@
     />
     <div class="banner-content">
       <div class="cover-image">
-        <NuxtImg 
-          :src="getSafeImageUrl(anime.coverImage)" 
+        <NuxtImg
+          :src="getSafeImageUrl(anime.coverImage)"
           :alt="getDisplayTitle(anime.title)"
           loading="lazy"
           width="230"

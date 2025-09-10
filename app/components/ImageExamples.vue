@@ -1,7 +1,7 @@
 <template>
   <div class="image-examples">
     <h2>Nuxt Image Examples</h2>
-    
+
     <!-- Basic usage with preset -->
     <div class="example-section">
       <h3>Cover Image (using preset)</h3>
