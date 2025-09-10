@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Media } from '~/utils/types/anilist'
+import type { Media, GraphQLResponse, AnimeDetailsResponse } from '~/utils/types/anilist'
 import { GET_ANIME_DETAILS } from '~/utils/api/queries'
 
 const route = useRoute()
@@ -37,13 +37,27 @@ const { data, error, refresh } = await useAsyncData(`anime-${idParam.value}`, as
   const id = idParam.value
   if (!Number.isFinite(id)) throw createError({ statusCode: 400, statusMessage: 'Invalid ID' })
 
-  const response = await $fetch('/graphql', {
+  const response = await $fetch<GraphQLResponse<AnimeDetailsResponse>>('/graphql', {
     method: 'POST',
     body: {
       query: GET_ANIME_DETAILS,
       variables: { id }
     }
   })
+
+  if (response.errors) {
+    throw createError({ 
+      statusCode: 500, 
+      statusMessage: response.errors[0]?.message || 'GraphQL error' 
+    })
+  }
+
+  if (!response.data) {
+    throw createError({ 
+      statusCode: 500, 
+      statusMessage: 'No data returned from GraphQL query' 
+    })
+  }
 
   return response.data.Media
 })
