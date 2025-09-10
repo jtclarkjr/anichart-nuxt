@@ -2,21 +2,20 @@
   <div class="search-filters">
     <div class="search-section">
       <input
-        :value="searchQuery"
+        v-model="searchModel"
         type="text"
         placeholder="Search anime..."
         class="search-input"
-        @input="handleSearchInput"
       >
     </div>
     <div class="filters">
-      <select :value="selectedSort" class="filter-select" @change="handleSortChange">
+      <select v-model="sortModel" class="filter-select" @change="handleFilterChange">
         <option :value="MediaSort.POPULARITY_DESC">Popular</option>
         <option :value="MediaSort.TRENDING_DESC">Trending</option>
         <option :value="MediaSort.SCORE_DESC">Top Rated</option>
         <option :value="MediaSort.START_DATE_DESC">Recently Released</option>
       </select>
-      <select :value="selectedSeason" class="filter-select" @change="handleSeasonChange">
+      <select v-model="seasonModel" class="filter-select" @change="handleFilterChange">
         <!-- <option value="">All Seasons</option> -->
         <option v-for="season in availableSeasons" :key="season.value" :value="season.value">
           {{ season.label }}
@@ -43,8 +42,9 @@ interface Emits {
   filterChange: []
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
+
 
 // Available seasons based on current time of year
 const availableSeasons = computed(() => {
@@ -58,7 +58,7 @@ const availableSeasons = computed(() => {
     FALL: 'Fall'
   } as const
 
-  // Always show current year's Spring, Summer, Fall
+  // Show seasons in chronological order: Spring, Summer, Fall, Winter
   const currentYearSeasons = ['SPRING', 'SUMMER', 'FALL'] as const
   for (const seasonKey of currentYearSeasons) {
     seasons.push({
@@ -86,23 +86,28 @@ const availableSeasons = computed(() => {
   return seasons
 })
 
-// Event handlers
-const handleSearchInput = (event: Event) => {
-  const target = event.target as HTMLInputElement
-  emit('update:searchQuery', target.value)
-}
+// Computed properties for v-model binding
+const seasonModel = computed({
+  get: () => props.selectedSeason,
+  set: (value: string) => emit('update:selectedSeason', value)
+})
 
-const handleSortChange = (event: Event) => {
-  const target = event.target as HTMLSelectElement
-  emit('update:selectedSort', target.value)
+const sortModel = computed({
+  get: () => props.selectedSort,
+  set: (value: string) => emit('update:selectedSort', value)
+})
+
+const searchModel = computed({
+  get: () => props.searchQuery,
+  set: (value: string) => emit('update:searchQuery', value)
+})
+
+
+// Event handler for filter changes
+const handleFilterChange = () => {
   emit('filterChange')
 }
 
-const handleSeasonChange = (event: Event) => {
-  const target = event.target as HTMLSelectElement
-  emit('update:selectedSeason', target.value)
-  emit('filterChange')
-}
 </script>
 
 <style scoped lang="scss">
