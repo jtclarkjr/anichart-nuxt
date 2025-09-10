@@ -1,8 +1,13 @@
 <template>
-  <div
-    class="banner"
-    :style="{ backgroundImage: bannerBackgroundImage }"
-  >
+  <div class="banner">
+    <NuxtImg
+      v-if="anime.bannerImage"
+      :src="anime.bannerImage"
+      alt=""
+      class="banner-bg"
+      preset="banner"
+      loading="eager"
+    />
     <div class="banner-content">
       <div class="cover-image">
         <NuxtImg 
@@ -60,23 +65,7 @@ interface Props {
   anime: Media
 }
 
-const props = defineProps<Props>()
-
-// Computed property for optimized banner background image
-const bannerBackgroundImage = computed(() => {
-  if (!props.anime.bannerImage) return 'none'
-  
-  // Use $img helper to get optimized image URL
-  const { $img } = useNuxtApp()
-  const optimizedUrl = $img(props.anime.bannerImage, {
-    width: 1200,
-    height: 400,
-    fit: 'cover',
-    format: 'webp'
-  })
-  
-  return `url(${optimizedUrl})`
-})
+defineProps<Props>()
 </script>
 
 <style scoped lang="scss">
@@ -89,9 +78,6 @@ const bannerBackgroundImage = computed(() => {
   padding: 2rem 0.75rem;
   overflow: hidden;
   background-color: var(--bg-secondary);
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
 
   @media (width >= 480px) {
     align-items: flex-end;
@@ -119,6 +105,19 @@ const bannerBackgroundImage = computed(() => {
       rgb(0 0 0 / 60%) 50%,
       rgb(0 0 0 / 90%) 100%
     );
+  }
+}
+
+.banner-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+
+  :deep(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 }
 
