@@ -8,6 +8,7 @@
       preset="banner"
       loading="eager"
     />
+    <div class="banner-overlay"></div>
     <div class="banner-content">
       <div class="cover-image">
         <NuxtImg
@@ -101,9 +102,22 @@ defineProps<Props>()
     content: '';
     background: linear-gradient(
       135deg,
-      rgb(0 0 0 / 80%) 0%,
-      rgb(0 0 0 / 60%) 50%,
+      rgb(0 0 0 / 85%) 0%,
+      rgb(0 0 0 / 70%) 50%,
       rgb(0 0 0 / 90%) 100%
+    );
+  }
+
+  &::after {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    content: '';
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgb(0 0 0 / 20%) 40%,
+      rgb(0 0 0 / 60%) 100%
     );
   }
 }
@@ -113,6 +127,8 @@ defineProps<Props>()
   top: 0;
   left: 0;
   z-index: 0;
+  width: 100%;
+  height: 100%;
 
   :deep(img) {
     width: 100%;
@@ -121,9 +137,17 @@ defineProps<Props>()
   }
 }
 
+.banner-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: rgb(0 0 0 / 40%);
+}
+
 .banner-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: flex;
   gap: 1rem;
   align-items: flex-end;
@@ -191,7 +215,10 @@ defineProps<Props>()
   font-size: clamp(1.5rem, 4vw, 3rem);
   font-weight: 700;
   line-height: 1.1;
-  text-shadow: 2px 2px 8px rgb(0 0 0 / 80%);
+  text-shadow: 
+    2px 2px 8px rgb(0 0 0 / 90%),
+    0 0 20px rgb(0 0 0 / 70%),
+    0 0 40px rgb(0 0 0 / 50%);
 }
 
 .alt-titles {
@@ -201,7 +228,9 @@ defineProps<Props>()
   p {
     margin: 0.25rem 0;
     font-size: 1.1rem;
-    text-shadow: 1px 1px 4px rgb(0 0 0 / 80%);
+    text-shadow: 
+      1px 1px 4px rgb(0 0 0 / 90%),
+      0 0 15px rgb(0 0 0 / 70%);
   }
 }
 
@@ -232,14 +261,16 @@ defineProps<Props>()
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    text-shadow: 1px 1px 3px rgb(0 0 0 / 80%);
-    opacity: 0.8;
+    text-shadow: 1px 1px 3px rgb(0 0 0 / 90%);
+    opacity: 0.95;
   }
 
   .value {
     font-size: 1rem;
     font-weight: 500;
-    text-shadow: 1px 1px 4px rgb(0 0 0 / 80%);
+    text-shadow: 
+      1px 1px 4px rgb(0 0 0 / 90%),
+      0 0 12px rgb(0 0 0 / 60%);
 
     &.score {
       font-weight: 700;
@@ -264,15 +295,17 @@ defineProps<Props>()
   font-size: 0.85rem;
   font-weight: 500;
   color: white;
-  text-shadow: 1px 1px 3px rgb(0 0 0 / 60%);
-  background: rgb(255 255 255 / 15%);
-  border: 1px solid rgb(255 255 255 / 20%);
+  text-shadow: 
+    1px 1px 3px rgb(0 0 0 / 80%),
+    0 0 8px rgb(0 0 0 / 60%);
+  background: rgb(0 0 0 / 25%);
+  border: 1px solid rgb(255 255 255 / 30%);
   border-radius: 20px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
   transition: all 0.2s ease;
 
   &:hover {
-    background: rgb(255 255 255 / 25%);
+    background: rgb(0 0 0 / 35%);
     transform: translateY(-2px);
   }
 }
