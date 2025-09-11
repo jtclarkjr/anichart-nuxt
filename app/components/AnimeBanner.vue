@@ -309,4 +309,86 @@ defineProps<Props>()
     transform: translateY(-2px);
   }
 }
+@media (width <= 480px) {
+  .banner-content {
+    gap: 1rem;
+    padding: 0 0.75rem;
+  }
+
+  .title {
+    font-size: clamp(1.4rem, 5.5vw, 2.25rem);
+    margin-bottom: 0.75rem;
+  }
+
+  .alt-titles {
+    margin-bottom: 1.25rem;
+  }
+
+  .meta-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 1.25rem 0;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .meta-item:last-child {
+    border-bottom: none;
+  }
+
+  .meta-item .label {
+    font-size: 0.85rem;
+    margin-right: 1rem;
+  }
+
+  .meta-item .value {
+    font-size: 1rem;
+    text-align: right;
+  }
+
+  .genre-tag {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (width <= 375px) {
+  .banner {
+    padding: 1.25rem 0.5rem;
+  }
+
+  .banner-content {
+    gap: 0.75rem;
+    padding: 0 0.5rem;
+  }
+
+  .title {
+    font-size: clamp(1.3rem, 6.5vw, 2rem);
+  }
+
+  .meta-item {
+    padding: 0.4rem 0;
+  }
+
+  .meta-item .label {
+    font-size: 0.8rem;
+  }
+
+  .meta-item .value {
+    font-size: 0.95rem;
+  }
+
+  .genre-tag {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.78rem;
+  }
+}
 </style>
