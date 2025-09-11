@@ -7,6 +7,7 @@
           v-model:search-query="searchQuery"
           v-model:selected-sort="selectedSort"
           v-model:selected-season="selectedSeason"
+          :loading="loading"
           @filter-change="handleFilterChange"
           @update:search-query="handleSearch"
         />
@@ -33,8 +34,8 @@
 <script setup lang="ts">
 import debounce from '~/utils/helpers/debounce'
 import { useAnime } from '~/composables/useAnime'
-import { GET_ANIME_LIST } from '~/utils/api/queries'
-import { MediaSeason } from '~/utils/types/anilist'
+import { GET_ANIME_LIST, SEARCH_ANIME } from '~/utils/api/queries'
+import { MediaSeason, MediaSort } from '~/utils/types/anilist'
 import type { AnimeListResponse, GraphQLResponse } from '~/utils/types/anilist'
 
 const {
@@ -67,7 +68,7 @@ const handleFilterChange = () => {
 
 const handleSearch = debounce(() => {
   if (import.meta.client) window.scrollTo(0, 0)
-}, 1000)
+}, 500) // Reduced from 1000ms to 500ms for better responsiveness
 
 // Reference to the AnimeGrid component
 const animeGridRef = ref<InstanceType<typeof AnimeGrid> | null>(null)
@@ -154,11 +155,16 @@ const buildVariables = (pageNum?: number) => {
   const variables: Record<string, string | number | string[]> = {
     page: pageNum || currentPage.value,
     perPage: itemsPerPage.value,
-    sort: [selectedSort.value]
+    sort: searchQuery.value.trim() ? [MediaSort.SEARCH_MATCH, selectedSort.value] : [selectedSort.value]
   }
 
   if (searchQuery.value.trim()) {
-    variables.search = searchQuery.value.trim()
+    // Clean and normalize search query for better matching
+    const cleanedQuery = searchQuery.value.trim()
+      .replace(/[\u00a0\u2000-\u200b\u2028-\u2029\u3000]/g, ' ') // Replace various whitespace chars
+      .replace(/\s+/g, ' ') // Normalize multiple spaces to single space
+    
+    variables.search = cleanedQuery
   }
 
   if (selectedSeason.value) {

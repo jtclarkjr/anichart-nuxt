@@ -15,7 +15,8 @@ describe('SearchFilters', () => {
   const defaultProps = {
     searchQuery: '',
     selectedSort: MediaSort.POPULARITY_DESC,
-    selectedSeason: 'SPRING'
+    selectedSeason: 'SPRING',
+    loading: false
   }
 
   beforeEach(() => {
@@ -401,6 +402,53 @@ describe('SearchFilters', () => {
         expect(selectWrapper.findAll('select')).toHaveLength(1)
         expect(selectWrapper.findAll('.select-icon')).toHaveLength(1)
       })
+    })
+  })
+
+  describe('Search Loading State', () => {
+    it('shows loading spinner when loading and search query exists', async () => {
+      const wrapper = await mountSuspended(SearchFilters, {
+        props: { ...defaultProps, loading: true, searchQuery: 'test' }
+      })
+
+      const loadingSpinner = wrapper.find('.search-loading')
+      expect(loadingSpinner.exists()).toBe(true)
+      expect(loadingSpinner.html()).toContain('loader-2')
+      
+      // Clear button should not be visible when loading
+      const clearButton = wrapper.find('.clear-button')
+      expect(clearButton.exists()).toBe(false)
+    })
+
+    it('does not show loading spinner when not loading', async () => {
+      const wrapper = await mountSuspended(SearchFilters, {
+        props: { ...defaultProps, loading: false, searchQuery: 'test' }
+      })
+
+      const loadingSpinner = wrapper.find('.search-loading')
+      expect(loadingSpinner.exists()).toBe(false)
+      
+      // Clear button should be visible
+      const clearButton = wrapper.find('.clear-button')
+      expect(clearButton.exists()).toBe(true)
+    })
+
+    it('does not show loading spinner when loading but no search query', async () => {
+      const wrapper = await mountSuspended(SearchFilters, {
+        props: { ...defaultProps, loading: true, searchQuery: '' }
+      })
+
+      const loadingSpinner = wrapper.find('.search-loading')
+      expect(loadingSpinner.exists()).toBe(false)
+    })
+
+    it('applies loading class to input when loading with search query', async () => {
+      const wrapper = await mountSuspended(SearchFilters, {
+        props: { ...defaultProps, loading: true, searchQuery: 'test' }
+      })
+
+      const searchInput = wrapper.find('.search-input')
+      expect(searchInput.classes()).toContain('is-loading')
     })
   })
 

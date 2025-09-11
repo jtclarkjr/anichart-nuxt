@@ -2,9 +2,18 @@
   <div class="search-filters">
     <div class="search-section">
       <div class="search-input-wrapper">
-        <input v-model="searchModel" type="text" placeholder="Search anime..." class="search-input" />
+        <input 
+          v-model="searchModel" 
+          type="text" 
+          placeholder="Search anime..."
+          class="search-input"
+          :class="{ 'is-loading': props.loading && searchModel }"
+        />
+        <div v-if="props.loading && searchModel" class="search-loading">
+          <Icon name="lucide:loader-2" size="16" class="spin" />
+        </div>
         <button 
-          v-if="searchModel" 
+          v-else-if="searchModel" 
           class="clear-button" 
           type="button"
           @click="clearSearch"
@@ -45,6 +54,7 @@ interface Props {
   searchQuery: string
   selectedSort: string // Now using string to match composable
   selectedSeason: string // Now using string to match composable
+  loading?: boolean // Optional loading state
 }
 
 interface Emits {
@@ -175,6 +185,34 @@ const clearSearch = () => {
 
   &::placeholder {
     color: var(--text-muted);
+  }
+
+  &.is-loading {
+    border-color: var(--primary-color);
+  }
+}
+
+.search-loading {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-color);
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 
