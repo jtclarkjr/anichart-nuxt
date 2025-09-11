@@ -192,9 +192,12 @@ describe('SearchFilters', () => {
 
       expect(wrapper.find('.search-filters').exists()).toBe(true)
       expect(wrapper.find('.search-section').exists()).toBe(true)
+      expect(wrapper.find('.search-input-wrapper').exists()).toBe(true)
       expect(wrapper.find('.search-input').exists()).toBe(true)
       expect(wrapper.find('.filters').exists()).toBe(true)
+      expect(wrapper.findAll('.select-wrapper')).toHaveLength(2)
       expect(wrapper.findAll('.filter-select')).toHaveLength(2)
+      expect(wrapper.findAll('.select-icon')).toHaveLength(2)
     })
 
     it('has proper form structure', async () => {
@@ -205,9 +208,21 @@ describe('SearchFilters', () => {
       const searchInput = wrapper.find('.search-input')
       expect(searchInput.attributes('type')).toBe('text')
 
+      const selectWrappers = wrapper.findAll('.select-wrapper')
+      expect(selectWrappers).toHaveLength(2)
+      
       const selects = wrapper.findAll('.filter-select')
       selects.forEach(select => {
         expect(select.element.tagName.toLowerCase()).toBe('select')
+      })
+      
+      // Check that select icons are present in the HTML
+      const selectIcons = wrapper.findAll('.select-icon')
+      expect(selectIcons).toHaveLength(2) // Exactly 2 for select dropdowns
+      
+      // Verify the icons contain the expected chevron-down name
+      selectIcons.forEach(icon => {
+        expect(icon.html()).toContain('chevron-down')
       })
     })
   })
@@ -233,6 +248,159 @@ describe('SearchFilters', () => {
           await mountSuspended(SearchFilters, { props })
         }).not.toThrow()
       }
+    })
+  })
+
+  describe('Clear Button Functionality', () => {
+    it('does not show clear button when search query is empty', async () => {
+      const wrapper = await mountSuspended(SearchFilters, {
+        props: { ...defaultProps, searchQuery: '' }
+      })
+
+      const clearButton = wrapper.find('.clear-button')
+      expect(clearButton.exists()).toBe(false)
+    })
+
+    it('shows clear button when search query has value', async () => {
+      const wrapper = await mountSuspended(SearchFilters, {
+        props: { ...defaultProps, searchQuery: 'test query' }
+      })
+
+      const clearButton = wrapper.find('.clear-button')
+      expect(clearButton.exists()).toBe(true)
+    })
+
+    it('clear button has correct attributes', async () => {
+      const wrapper = await mountSuspended(SearchFilters, {
+        props: { ...defaultProps, searchQuery: 'test' }
+      })
+
+      const clearButton = wrapper.find('.clear-button')
+      expect(clearButton.attributes('type')).toBe('button')
+      expect(clearButton.attributes('aria-label')).toBe('Clear search')
+    })
+
+    it('clear button contains Icon component', async () => {
+      const wrapper = await mountSuspended(SearchFilters, {
+        props: { ...defaultProps, searchQuery: 'test' }
+      })
+
+      const clearButton = wrapper.find('.clear-button')
+      // Check for Icon component by looking for elements with the expected icon name
+      expect(clearButton.html()).toContain('lucide:x')
+    })
+
+    it('emits correct events when clear button is clicked', async () => {
+      const wrapper = await mountSuspended(SearchFilters, {
+        props: { ...defaultProps, searchQuery: 'test query' }
+      })
+
+      const clearButton = wrapper.find('.clear-button')
+      await clearButton.trigger('click')
+
+      // Should emit update:searchQuery with empty string
+      expect(wrapper.emitted('update:searchQuery')).toBeTruthy()
+      expect(wrapper.emitted('update:searchQuery')![0]).toEqual([''])
+      
+      // Should also emit filterChange to update results
+      expect(wrapper.emitted('filterChange')).toBeTruthy()
+      expect(wrapper.emitted('filterChange')).toHaveLength(1)
+    })
+
+    it('clear button disappears after clearing search', async () => {
+      const wrapper = await mountSuspended(SearchFilters, {
+        props: { ...defaultProps, searchQuery: 'test query' }
+      })
+
+      // Initially clear button should be visible
+      expect(wrapper.find('.clear-button').exists()).toBe(true)
+
+      // Simulate clearing by updating the prop (simulates parent component response)
+      await wrapper.setProps({ ...defaultProps, searchQuery: '' })
+
+      // Clear button should now be hidden
+      expect(wrapper.find('.clear-button').exists()).toBe(false)
+    })
+
+    it('clear button shows/hides reactively as search input changes', async () => {
+      const wrapper = await mountSuspended(SearchFilters, {
+        props: { ...defaultProps, searchQuery: '' }
+      })
+
+      // Initially no clear button
+      expect(wrapper.find('.clear-button').exists()).toBe(false)
+
+      // Add text to search input
+      await wrapper.setProps({ ...defaultProps, searchQuery: 'test' })
+      expect(wrapper.find('.clear-button').exists()).toBe(true)
+
+      // Clear text
+      await wrapper.setProps({ ...defaultProps, searchQuery: '' })
+      expect(wrapper.find('.clear-button').exists()).toBe(false)
+
+      // Add text again
+      await wrapper.setProps({ ...defaultProps, searchQuery: 'another test' })
+      expect(wrapper.find('.clear-button').exists()).toBe(true)
+    })
+
+    it('clear button works with different search query values', async () => {
+      const testQueries = ['test', 'a', 'very long search query', '日本語', '123', '!@#$%']
+      
+      for (const query of testQueries) {
+        const wrapper = await mountSuspended(SearchFilters, {
+          props: { ...defaultProps, searchQuery: query }
+        })
+
+        expect(wrapper.find('.clear-button').exists()).toBe(true)
+        
+        const clearButton = wrapper.find('.clear-button')
+        await clearButton.trigger('click')
+        
+        expect(wrapper.emitted('update:searchQuery')![0]).toEqual([''])
+      }
+    })
+  })
+
+  describe('Select Dropdown Icons', () => {
+    it('renders chevron-down icons for both select dropdowns', async () => {
+      const wrapper = await mountSuspended(SearchFilters, {
+        props: defaultProps
+      })
+
+      const selectWrappers = wrapper.findAll('.select-wrapper')
+      expect(selectWrappers).toHaveLength(2)
+      
+      const selectIcons = wrapper.findAll('.select-icon')
+      expect(selectIcons).toHaveLength(2)
+      
+      // Check that each icon contains the chevron-down icon name
+      selectIcons.forEach(icon => {
+        expect(icon.html()).toContain('chevron-down')
+      })
+    })
+
+    it('select icons have correct CSS classes and positioning', async () => {
+      const wrapper = await mountSuspended(SearchFilters, {
+        props: defaultProps
+      })
+
+      const selectIcons = wrapper.findAll('.select-icon')
+      selectIcons.forEach(icon => {
+        expect(icon.classes()).toContain('select-icon')
+      })
+    })
+
+    it('select wrappers contain both select element and icon', async () => {
+      const wrapper = await mountSuspended(SearchFilters, {
+        props: defaultProps
+      })
+
+      const selectWrappers = wrapper.findAll('.select-wrapper')
+      selectWrappers.forEach(selectWrapper => {
+        // Each wrapper should contain exactly one select and one icon
+        expect(selectWrapper.findAll('select')).toHaveLength(1)
+        expect(selectWrapper.findAll('.select-icon')).toHaveLength(1)
+      })
     })
   })
 

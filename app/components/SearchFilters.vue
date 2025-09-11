@@ -1,21 +1,38 @@
 <template>
   <div class="search-filters">
     <div class="search-section">
-      <input v-model="searchModel" type="text" placeholder="Search anime..." class="search-input" />
+      <div class="search-input-wrapper">
+        <input v-model="searchModel" type="text" placeholder="Search anime..." class="search-input" />
+        <button 
+          v-if="searchModel" 
+          class="clear-button" 
+          type="button"
+          @click="clearSearch"
+          aria-label="Clear search"
+        >
+          <Icon name="lucide:x" size="16" />
+        </button>
+      </div>
     </div>
     <div class="filters">
-      <select v-model="sortModel" class="filter-select" @change="handleFilterChange">
-        <option :value="MediaSort.POPULARITY_DESC">Popular</option>
-        <option :value="MediaSort.TRENDING_DESC">Trending</option>
-        <option :value="MediaSort.SCORE_DESC">Top Rated</option>
-        <option :value="MediaSort.START_DATE_DESC">Recently Released</option>
-      </select>
-      <select v-model="seasonModel" class="filter-select" @change="handleFilterChange">
-        <!-- <option value="">All Seasons</option> -->
-        <option v-for="season in availableSeasons" :key="season.value" :value="season.value">
-          {{ season.label }}
-        </option>
-      </select>
+      <div class="select-wrapper">
+        <select v-model="sortModel" class="filter-select" @change="handleFilterChange">
+          <option :value="MediaSort.POPULARITY_DESC">Popular</option>
+          <option :value="MediaSort.TRENDING_DESC">Trending</option>
+          <option :value="MediaSort.SCORE_DESC">Top Rated</option>
+          <option :value="MediaSort.START_DATE_DESC">Recently Released</option>
+        </select>
+        <Icon name="lucide:chevron-down" class="select-icon" size="16" />
+      </div>
+      <div class="select-wrapper">
+        <select v-model="seasonModel" class="filter-select" @change="handleFilterChange">
+          <!-- <option value="">All Seasons</option> -->
+          <option v-for="season in availableSeasons" :key="season.value" :value="season.value">
+            {{ season.label }}
+          </option>
+        </select>
+        <Icon name="lucide:chevron-down" class="select-icon" size="16" />
+      </div>
     </div>
   </div>
 </template>
@@ -100,6 +117,12 @@ const searchModel = computed({
 const handleFilterChange = () => {
   emit('filterChange')
 }
+
+// Clear search input
+const clearSearch = () => {
+  emit('update:searchQuery', '')
+  emit('filterChange')
+}
 </script>
 
 <style scoped lang="scss">
@@ -130,9 +153,14 @@ const handleFilterChange = () => {
   }
 }
 
+.search-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
 .search-input {
   width: 100%;
-  padding: 12px 16px;
+  padding: 12px 48px 12px 16px; // Add right padding for clear button
   font-size: 1rem;
   color: var(--text-color);
   background: var(--bg-secondary);
@@ -150,23 +178,53 @@ const handleFilterChange = () => {
   }
 }
 
+.clear-button {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: var(--text-color);
+    background: var(--border-color);
+  }
+
+  &:focus {
+    outline: none;
+    color: var(--primary-color);
+  }
+}
+
 .filters {
   display: flex;
   gap: 12px;
   justify-content: space-between;
 }
 
+.select-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
 .filter-select {
-  padding: 8px 32px 8px 12px; /* Add extra right padding for chevron */
+  padding: 8px 32px 8px 12px; /* Add extra right padding for icon */
   font-size: 0.9rem;
   color: var(--text-color);
   appearance: none;
   cursor: pointer;
   background: var(--bg-secondary);
-  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23666" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 12px;
   border: 2px solid var(--border-color);
   border-radius: 6px;
   transition: border-color 0.2s ease;
@@ -180,5 +238,19 @@ const handleFilterChange = () => {
     color: var(--text-color);
     background: var(--bg-secondary);
   }
+}
+
+.select-icon {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none; /* Prevent icon from interfering with select clicks */
+  transition: color 0.2s ease;
+}
+
+.select-wrapper:hover .select-icon {
+  color: var(--text-color);
 }
 </style>
