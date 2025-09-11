@@ -1,6 +1,6 @@
 # AniChart
 
-A modern anime discovery and exploration web application built with Nuxt 3. Browse, search, and discover anime with detailed information sourced from the AniList GraphQL API.
+A modern anime discovery and exploration web application built with Nuxt 4. Browse, search, and discover anime with detailed information sourced from the AniList GraphQL API.
 
 ## Features
 
@@ -14,7 +14,7 @@ A modern anime discovery and exploration web application built with Nuxt 3. Brow
 
 ## Tech Stack
 
-- **Framework**: Nuxt 3 with Vue 3 Composition API
+- **Framework**: Nuxt 4 with Vue 3 Composition API
 - **Styling**: SCSS with CSS custom properties for theming
 - **Data Source**: AniList GraphQL API
 - **Icons**: Nuxt Icon with Lucide icon set
