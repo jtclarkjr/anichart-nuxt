@@ -87,6 +87,18 @@ describe('AnimeCard with Nuxt', () => {
 
       expect(wrapper.find('.format').exists()).toBe(false)
     })
+
+    it('formats TV_SHORT format correctly', async () => {
+      const animeWithTvShort = createMockAnime({ format: 'TV_SHORT' as any })
+      const wrapper = await mountSuspended(AnimeCard, {
+        props: { anime: animeWithTvShort },
+        global: {
+          stubs: { NuxtImg: NuxtImgMock }
+        }
+      })
+
+      expect(wrapper.find('.format').text()).toBe('TV SHORT')
+    })
   })
 
   describe('Events', () => {

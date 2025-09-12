@@ -19,7 +19,7 @@
       <h3 class="title">{{ getDisplayTitle(anime.title) }}</h3>
       <div class="meta">
         <span class="year">{{ formatYear(anime.startDate) }}</span>
-        <span v-if="anime.format" class="format">{{ anime.format }}</span>
+        <span v-if="anime.format" class="format">{{ formatMediaFormat(anime.format) }}</span>
       </div>
       <div class="genres">
         <span v-for="genre in anime.genres.slice(0, 2)" :key="genre" class="genre-tag">
@@ -32,6 +32,7 @@
 
 <script setup lang="ts">
 import { getDisplayTitle, getSafeImageUrl, formatYear } from '~/utils/api/anime.api'
+import { formatMediaFormat } from '~/utils/helpers/format'
 import type { Media } from '~/utils/types/anilist'
 
 interface Props {

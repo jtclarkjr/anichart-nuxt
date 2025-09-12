@@ -37,7 +37,7 @@
           </div>
           <div v-if="anime.format" class="meta-item">
             <span class="label">Format:</span>
-            <span class="value">{{ anime.format }}</span>
+            <span class="value">{{ formatMediaFormat(anime.format) }}</span>
           </div>
           <div v-if="anime.episodes" class="meta-item">
             <span class="label">Episodes:</span>
@@ -60,6 +60,7 @@
 
 <script setup lang="ts">
 import { getDisplayTitle, getSafeImageUrl, formatScore, formatStatus } from '~/utils/api/anime.api'
+import { formatMediaFormat } from '~/utils/helpers/format'
 import type { Media } from '~/utils/types/anilist'
 
 interface Props {
