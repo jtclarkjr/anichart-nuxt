@@ -29,7 +29,9 @@ export default defineNuxtConfig({
 
   // Nitro configuration
   nitro: {
-    // Server-side configuration will be handled in server/api routes
+    routeRules: {
+      '/': { redirect: '/anime' }
+    }
   },
 
   // App configuration
