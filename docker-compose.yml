@@ -1,0 +1,19 @@
+services:
+  web:
+    build:
+      context: .
+      target: ${TARGET:-base} # Use 'base' for development, override with TARGET=build for production
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.nuxt
+      - /app/.output
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - HOST=0.0.0.0
+    command: sh -c "bun install && ${COMMAND:-bun run dev}" # Install dependencies then run command
+
+
+  # Add more services here as needed (e.g., database, cache, etc.)
