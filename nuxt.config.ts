@@ -55,6 +55,21 @@ export default defineNuxtConfig({
   // Modules
   modules: ['@nuxt/eslint', '@nuxt/image', '@nuxt/icon', 'shadcn-nuxt'],
 
+  // Component configuration
+  components: {
+    dirs: [
+      {
+        path: '~/components',
+        pathPrefix: false
+      },
+      {
+        path: '~/components/ui',
+        pathPrefix: false,
+        extensions: ['.vue']
+      }
+    ]
+  },
+
   // shadcn-nuxt configuration
   shadcn: {
     prefix: '',
