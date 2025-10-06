@@ -256,7 +256,7 @@ const clearSearch = () => {
 .filters {
   display: flex;
   gap: 12px;
-  justify-content: space-between;
+  justify-content: flex-end;
 }
 
 .select-wrapper {
