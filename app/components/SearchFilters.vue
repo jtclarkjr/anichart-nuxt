@@ -168,20 +168,28 @@ const clearSearch = () => {
   width: 100%;
 }
 
-.search-input {
-  width: 100%;
-  padding: 12px 48px 12px 16px; // Add right padding for clear button
+%base-input {
+  height: 48px;
+  padding: 12px 16px;
   font-size: 1rem;
+  line-height: 1.5;
   color: var(--text-color);
   background: var(--bg-secondary);
   border: 2px solid var(--border-color);
   border-radius: 8px;
   transition: border-color 0.2s ease;
+  box-sizing: border-box;
 
   &:focus {
     outline: none;
     border-color: var(--primary-color);
   }
+}
+
+.search-input {
+  @extend %base-input;
+  width: 100%;
+  padding-right: 48px;
 
   &::placeholder {
     color: var(--text-muted);
@@ -257,20 +265,10 @@ const clearSearch = () => {
 }
 
 .filter-select {
-  padding: 8px 32px 8px 12px; /* Add extra right padding for icon */
-  font-size: 0.9rem;
-  color: var(--text-color);
+  @extend %base-input;
+  padding-right: 32px;
   appearance: none;
   cursor: pointer;
-  background: var(--bg-secondary);
-  border: 2px solid var(--border-color);
-  border-radius: 6px;
-  transition: border-color 0.2s ease;
-
-  &:focus {
-    outline: none;
-    border-color: var(--primary-color);
-  }
 
   option {
     color: var(--text-color);
