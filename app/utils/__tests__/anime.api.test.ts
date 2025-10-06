@@ -194,15 +194,15 @@ describe('Anime API Utils', () => {
           super()
           return new originalDate(year, month - 1, 15) // 15th of the month
         }
-        
+
         static now() {
           return new originalDate(year, month - 1, 15).getTime()
         }
-        
+
         getMonth() {
           return month - 1
         }
-        
+
         getFullYear() {
           return year
         }

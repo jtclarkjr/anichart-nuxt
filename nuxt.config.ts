@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import tailwindcss from '@tailwindcss/vite'
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
@@ -7,10 +9,11 @@ export default defineNuxtConfig({
   ssr: true,
 
   // CSS configuration
-  css: ['~/assets/styles/anime.scss'],
+  css: ['@/assets/css/tailwind.css'],
 
   // Vite configuration
   vite: {
+    plugins: [tailwindcss()],
     css: {
       preprocessorOptions: {
         scss: {
@@ -50,7 +53,13 @@ export default defineNuxtConfig({
   },
 
   // Modules
-  modules: ['@nuxt/eslint', '@nuxt/image', '@nuxt/icon'],
+  modules: ['@nuxt/eslint', '@nuxt/image', '@nuxt/icon', 'shadcn-nuxt'],
+
+  // shadcn-nuxt configuration
+  shadcn: {
+    prefix: '',
+    componentDir: './app/components/ui'
+  },
 
   // Image configuration
   image: {

@@ -1,8 +1,10 @@
 <template>
-  <div class="anime-list">
-    <div class="header">
-      <div class="container">
-        <h1>AniChart</h1>
+  <div class="min-h-screen bg-background">
+    <div class="sticky top-0 z-[100] py-6 bg-muted/40 border-b border-border backdrop-blur-[10px]">
+      <div class="w-full max-w-[1200px] px-4 mx-auto">
+        <h1 class="text-3xl font-bold text-primary text-center mb-0 md:mb-4 md:text-left">
+          AniChart
+        </h1>
         <SearchFilters
           v-model:search-query="searchQuery"
           v-model:selected-sort="selectedSort"
@@ -14,7 +16,7 @@
       </div>
     </div>
 
-    <div class="container">
+    <div class="w-full max-w-[1200px] px-4 mx-auto">
       <AnimeGrid
         ref="animeGridRef"
         :anime="displayedAnime"
@@ -155,15 +157,18 @@ const buildVariables = (pageNum?: number) => {
   const variables: Record<string, string | number | string[]> = {
     page: pageNum || currentPage.value,
     perPage: itemsPerPage.value,
-    sort: searchQuery.value.trim() ? [MediaSort.SEARCH_MATCH, selectedSort.value] : [selectedSort.value]
+    sort: searchQuery.value.trim()
+      ? [MediaSort.SEARCH_MATCH, selectedSort.value]
+      : [selectedSort.value]
   }
 
   if (searchQuery.value.trim()) {
     // Clean and normalize search query for better matching
-    const cleanedQuery = searchQuery.value.trim()
+    const cleanedQuery = searchQuery.value
+      .trim()
       .replace(/[\u00a0\u2000-\u200b\u2028-\u2029\u3000]/g, ' ') // Replace various whitespace chars
       .replace(/\s+/g, ' ') // Normalize multiple spaces to single space
-    
+
     variables.search = cleanedQuery
   }
 
@@ -257,40 +262,3 @@ onMounted(async () => {
 
 onUnmounted(() => cleanupObserver())
 </script>
-
-<style scoped lang="scss">
-.anime-list {
-  min-height: 100vh;
-  background: var(--background-color);
-}
-
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  padding: 1.5rem 0;
-  background: var(--surface-color);
-  border-bottom: 1px solid var(--border-color);
-  backdrop-filter: blur(10px);
-
-  h1 {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--primary-color);
-    text-align: center;
-  }
-  @media (width >= 768px) {
-    h1 {
-      margin-bottom: 1rem;
-      text-align: left;
-    }
-  }
-}
-
-.container {
-  width: 100%;
-  max-width: 1200px;
-  padding: 0 1rem;
-  margin: 0 auto;
-}
-</style>

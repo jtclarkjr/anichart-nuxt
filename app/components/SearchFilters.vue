@@ -1,47 +1,58 @@
 <template>
-  <div class="search-filters">
-    <div class="search-section">
-      <div class="search-input-wrapper">
-        <input 
-          v-model="searchModel" 
-          type="text" 
+  <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <div
+      class="flex-1 w-full md:flex-[0_1_500px] md:max-w-[500px] lg:flex-[0_1_600px] lg:max-w-[600px]"
+    >
+      <div class="relative w-full">
+        <Input
+          v-model="searchModel"
+          type="text"
           placeholder="Search anime..."
-          class="search-input"
-          :class="{ 'is-loading': props.loading && searchModel }"
+          class="h-9 pr-12"
+          :class="{ 'border-primary': props.loading && searchModel }"
         />
-        <div v-if="props.loading && searchModel" class="search-loading">
-          <Icon name="lucide:loader-2" size="16" class="spin" />
+        <div
+          v-if="props.loading && searchModel"
+          class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center text-primary"
+        >
+          <Spinner class="w-4 h-4" />
         </div>
-        <button 
-          v-else-if="searchModel" 
-          class="clear-button" 
+        <Button
+          v-else-if="searchModel"
+          variant="ghost"
+          size="icon"
+          class="absolute right-3 top-1/2 -translate-y-1/2 h-6 w-6 rounded-full text-muted-foreground hover:text-foreground hover:bg-border"
           type="button"
           @click="clearSearch"
           aria-label="Clear search"
         >
           <Icon name="lucide:x" size="16" />
-        </button>
+        </Button>
       </div>
     </div>
-    <div class="filters">
-      <div class="select-wrapper">
-        <select v-model="sortModel" class="filter-select" @change="handleFilterChange">
-          <option :value="MediaSort.POPULARITY_DESC">Popular</option>
-          <option :value="MediaSort.TRENDING_DESC">Trending</option>
-          <option :value="MediaSort.SCORE_DESC">Top Rated</option>
-          <option :value="MediaSort.START_DATE_DESC">Recently Released</option>
-        </select>
-        <Icon name="lucide:chevron-down" class="select-icon" size="16" />
-      </div>
-      <div class="select-wrapper">
-        <select v-model="seasonModel" class="filter-select" @change="handleFilterChange">
-          <!-- <option value="">All Seasons</option> -->
-          <option v-for="season in availableSeasons" :key="season.value" :value="season.value">
+    <div class="flex gap-3 justify-end">
+      <Select v-model="sortModel" @update:model-value="handleFilterChange">
+        <SelectTrigger class="w-[180px]">
+          <SelectValue placeholder="Sort by" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem :value="MediaSort.POPULARITY_DESC">Popular</SelectItem>
+          <SelectItem :value="MediaSort.TRENDING_DESC">Trending</SelectItem>
+          <SelectItem :value="MediaSort.SCORE_DESC">Top Rated</SelectItem>
+          <SelectItem :value="MediaSort.START_DATE_DESC">Recently Released</SelectItem>
+        </SelectContent>
+      </Select>
+
+      <Select v-model="seasonModel" @update:model-value="handleFilterChange">
+        <SelectTrigger class="w-[180px]">
+          <SelectValue placeholder="Season" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem v-for="season in availableSeasons" :key="season.value" :value="season.value">
             {{ season.label }}
-          </option>
-        </select>
-        <Icon name="lucide:chevron-down" class="select-icon" size="16" />
-      </div>
+          </SelectItem>
+        </SelectContent>
+      </Select>
     </div>
   </div>
 </template>
@@ -134,159 +145,3 @@ const clearSearch = () => {
   emit('filterChange')
 }
 </script>
-
-<style scoped lang="scss">
-.search-filters {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-
-  @media (width >= 768px) {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-}
-
-.search-section {
-  flex: 1;
-  width: 100%;
-
-  @media (width >= 768px) {
-    flex: 0 1 500px;
-    max-width: 500px;
-  }
-
-  @media (width >= 1024px) {
-    flex: 0 1 600px;
-    max-width: 600px;
-  }
-}
-
-.search-input-wrapper {
-  position: relative;
-  width: 100%;
-}
-
-%base-input {
-  height: 48px;
-  padding: 12px 16px;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: var(--text-color);
-  background: var(--bg-secondary);
-  border: 2px solid var(--border-color);
-  border-radius: 8px;
-  transition: border-color 0.2s ease;
-  box-sizing: border-box;
-
-  &:focus {
-    outline: none;
-    border-color: var(--primary-color);
-  }
-}
-
-.search-input {
-  @extend %base-input;
-  width: 100%;
-  padding-right: 48px;
-
-  &::placeholder {
-    color: var(--text-muted);
-  }
-
-  &.is-loading {
-    border-color: var(--primary-color);
-  }
-}
-
-.search-loading {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--primary-color);
-}
-
-.spin {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.clear-button {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  color: var(--text-muted);
-  background: none;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    color: var(--text-color);
-    background: var(--border-color);
-  }
-
-  &:focus {
-    outline: none;
-    color: var(--primary-color);
-  }
-}
-
-.filters {
-  display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-}
-
-.select-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
-.filter-select {
-  @extend %base-input;
-  padding-right: 32px;
-  appearance: none;
-  cursor: pointer;
-
-  option {
-    color: var(--text-color);
-    background: var(--bg-secondary);
-  }
-}
-
-.select-icon {
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-muted);
-  pointer-events: none; /* Prevent icon from interfering with select clicks */
-  transition: color 0.2s ease;
-}
-
-.select-wrapper:hover .select-icon {
-  color: var(--text-color);
-}
-</style>

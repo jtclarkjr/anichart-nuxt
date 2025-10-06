@@ -1,8 +1,13 @@
 <template>
-  <section class="description-section">
-    <h2>Description</h2>
+  <section>
+    <h2 class="pb-2 mb-6 text-2xl font-semibold text-foreground border-b-2 border-primary">
+      Description
+    </h2>
     <!-- eslint-disable-next-line vue/no-v-html -->
-    <div class="description" v-html="anime.description || 'No description available.'" />
+    <div
+      class="text-base leading-[1.7] text-foreground [&_p]:mb-4 [&_p:last-child]:mb-0 [&_br]:mb-2 [&_i]:italic [&_i]:text-muted-foreground [&_b]:font-semibold [&_b]:text-primary [&_strong]:font-semibold [&_strong]:text-primary [&_a]:text-primary [&_a]:no-underline hover:[&_a]:underline"
+      v-html="anime.description || 'No description available.'"
+    />
   </section>
 </template>
 
@@ -15,54 +20,3 @@ interface Props {
 
 defineProps<Props>()
 </script>
-
-<style scoped lang="scss">
-.description-section {
-  h2 {
-    padding-bottom: 0.5rem;
-    margin: 0 0 1.5rem;
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--text-color);
-    border-bottom: 2px solid var(--primary-color);
-  }
-}
-
-.description {
-  font-size: 1rem;
-  line-height: 1.7;
-  color: var(--text-color);
-
-  :deep(p) {
-    margin-bottom: 1rem;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-
-  :deep(br) {
-    margin-bottom: 0.5rem;
-  }
-
-  :deep(i) {
-    font-style: italic;
-    color: var(--text-muted);
-  }
-
-  :deep(b),
-  :deep(strong) {
-    font-weight: 600;
-    color: var(--primary-color);
-  }
-
-  :deep(a) {
-    color: var(--primary-color);
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-}
-</style>
