@@ -1,4 +1,4 @@
-import { MediaFormat } from '../types/anilist'
+import type { MediaFormat } from '../types/anilist'
 
 /**
  * Format media format for display (converts underscores to spaces)

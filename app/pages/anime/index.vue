@@ -36,7 +36,7 @@
 <script setup lang="ts">
 import debounce from '~/utils/helpers/debounce'
 import { useAnime } from '~/composables/useAnime'
-import { GET_ANIME_LIST, SEARCH_ANIME } from '~/utils/api/queries'
+import { GET_ANIME_LIST } from '~/utils/api/queries'
 import { MediaSeason, MediaSort } from '~/utils/types/anilist'
 import type { AnimeListResponse, GraphQLResponse } from '~/utils/types/anilist'
 

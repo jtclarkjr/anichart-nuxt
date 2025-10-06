@@ -19,12 +19,12 @@
         </div>
         <Button
           v-else-if="searchModel"
+          aria-label="Clear search"
           variant="ghost"
           size="icon"
           class="absolute right-3 top-1/2 -translate-y-1/2 h-6 w-6 rounded-full text-muted-foreground hover:text-foreground hover:bg-border"
           type="button"
           @click="clearSearch"
-          aria-label="Clear search"
         >
           <Icon name="lucide:x" size="16" />
         </Button>

@@ -67,6 +67,7 @@ export const Default: Story = {
 ## Configuration
 
 The Storybook configuration is in:
+
 - `.storybook/main.ts` - Main configuration
 - `.storybook/preview.ts` - Preview settings
 - `nuxt.config.ts` - Nuxt-specific Storybook settings

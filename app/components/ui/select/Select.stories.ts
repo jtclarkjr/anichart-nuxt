@@ -69,7 +69,15 @@ export const WithLabel: Story = {
 
 export const WithGroups: Story = {
   render: () => ({
-    components: { Select, SelectTrigger, SelectValue, SelectContent, SelectItem, SelectGroup, SelectLabel },
+    components: {
+      Select,
+      SelectTrigger,
+      SelectValue,
+      SelectContent,
+      SelectItem,
+      SelectGroup,
+      SelectLabel
+    },
     setup() {
       const value = ref('')
       return { value }
@@ -131,7 +139,15 @@ export const AnimeStatusSelect: Story = {
 
 export const SeasonSelect: Story = {
   render: () => ({
-    components: { Select, SelectTrigger, SelectValue, SelectContent, SelectItem, SelectGroup, SelectLabel },
+    components: {
+      Select,
+      SelectTrigger,
+      SelectValue,
+      SelectContent,
+      SelectItem,
+      SelectGroup,
+      SelectLabel
+    },
     setup() {
       const season = ref('')
       return { season }
