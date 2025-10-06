@@ -53,7 +53,7 @@ export default defineNuxtConfig({
   },
 
   // Modules
-  modules: ['@nuxt/eslint', '@nuxt/image', '@nuxt/icon', 'shadcn-nuxt'],
+  modules: ['@nuxt/eslint', '@nuxt/image', '@nuxt/icon', 'shadcn-nuxt', '@nuxtjs/storybook'],
 
   // Component configuration
   components: {
@@ -114,5 +114,12 @@ export default defineNuxtConfig({
   // TypeScript configuration
   typescript: {
     typeCheck: false // need to add vue-tsc dep for prod build when true
+  },
+
+  // Storybook configuration
+  storybook: {
+    url: 'http://localhost:6006',
+    storybookRoute: '/__storybook__',
+    port: 6006
   }
 })

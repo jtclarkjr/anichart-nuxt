@@ -15,7 +15,7 @@ A modern anime discovery and exploration web application built with Nuxt 4. Brow
 ## Tech Stack
 
 - **Framework**: Nuxt 4 with Vue 3 Composition API
-- **Styling**: SCSS with CSS custom properties for theming
+- **Styling**: Headless UI components with Tailwind v4
 - **Data Source**: AniList GraphQL API
 - **Icons**: Nuxt Icon with Lucide icon set
 - **Image Optimization**: Nuxt Image with WebP/AVIF support
