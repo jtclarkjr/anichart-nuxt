@@ -88,4 +88,3 @@ export const enum MediaSort {
   FAVOURITES = 'FAVOURITES',
   FAVOURITES_DESC = 'FAVOURITES_DESC'
 }
-
