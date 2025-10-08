@@ -13,7 +13,6 @@
 //   const target = event.target as HTMLInputElement
 //   console.log('User input:', target.value)
 // }, 300)
-/* eslint-disable no-unused-vars */
 const debounce = <T extends (...args: unknown[]) => unknown>(func: T, delay: number) => {
   let timeoutId: ReturnType<typeof setTimeout> | null = null
 
