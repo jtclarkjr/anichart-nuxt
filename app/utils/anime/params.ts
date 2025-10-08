@@ -1,0 +1,29 @@
+import type { AnimeListParams, MediaSort, MediaSeason } from '~/utils/types/anilist'
+import type { AnimeQueryState } from '~/utils/types/anime'
+import { getCurrentSeason } from '~/utils/api/anime.api'
+
+export const buildAnimeParams = (state: AnimeQueryState): AnimeListParams => {
+  const params: AnimeListParams = {
+    page: state.page,
+    perPage: state.perPage,
+    sort: [state.sort as MediaSort],
+    isAdult: false
+  }
+
+  if (state.searchQuery.trim()) {
+    params.search = state.searchQuery.trim()
+  }
+
+  if (state.selectedSeason) {
+    params.season = state.selectedSeason as MediaSeason
+    params.seasonYear = calculateSeasonYear(state.selectedSeason)
+  }
+
+  return params
+}
+
+export const calculateSeasonYear = (selectedSeason: string): number => {
+  const { season: currentSeason, year } = getCurrentSeason()
+
+  return selectedSeason === 'WINTER' && currentSeason === MediaSeason.FALL ? year + 1 : year
+}
