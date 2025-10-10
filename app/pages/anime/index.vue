@@ -39,6 +39,7 @@ import { useAnime } from '~/composables/useAnime'
 import { GET_ANIME_LIST } from '~/utils/api/queries'
 import { MediaSeason, MediaSort } from '~/utils/types/anilist'
 import type { AnimeListResponse, GraphQLResponse } from '~/utils/types/anilist'
+import AnimeGrid from '~/components/AnimeGrid.vue'
 
 const {
   currentAnime,
@@ -77,6 +78,13 @@ const animeGridRef = ref<InstanceType<typeof AnimeGrid> | null>(null)
 // Don't store complex objects in useState - they cause serialization issues
 let observer: IntersectionObserver | null = null
 let scrollListener: ((event: Event) => void) | null = null
+
+// Reset scroll position on initial mount
+onBeforeMount(() => {
+  if (import.meta.client) {
+    window.scrollTo(0, 0)
+  }
+})
 
 const setupShowMore = () => {
   // Only run on client
