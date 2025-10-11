@@ -35,6 +35,7 @@
 
 <script setup lang="ts">
 import debounce from '~/utils/helpers/debounce'
+import { getCurrentSeason } from '~/utils/helpers/date'
 import { useAnime } from '~/composables/useAnime'
 import { GET_ANIME_LIST } from '~/utils/api/queries'
 import { MediaSeason, MediaSort } from '~/utils/types/anilist'
@@ -140,25 +141,6 @@ const cleanupObserver = () => {
   }
 }
 
-// Helper function to get current season
-const getCurrentSeason = () => {
-  const now = new Date()
-  const month = now.getMonth() + 1
-  const year = now.getFullYear()
-
-  let season: MediaSeason
-  if (month >= 12 || month <= 2) {
-    season = MediaSeason.WINTER
-  } else if (month >= 3 && month <= 5) {
-    season = MediaSeason.SPRING
-  } else if (month >= 6 && month <= 8) {
-    season = MediaSeason.SUMMER
-  } else {
-    season = MediaSeason.FALL
-  }
-
-  return { season, year }
-}
 
 // Build GraphQL variables from current state
 const buildVariables = (pageNum?: number) => {
