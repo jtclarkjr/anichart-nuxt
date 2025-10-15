@@ -36,12 +36,12 @@
     "vue": "^3.5.22"
   },
   "devDependencies": {
-    "@iconify-json/lucide": "^1.2.68",
+    "@iconify-json/lucide": "^1.2.69",
     "@nuxt/icon": "^2.0.0",
     "@nuxt/test-utils": "^3.19.2",
     "@nuxtjs/storybook": "^9.0.1",
     "@storybook/blocks": "^8.6.14",
-    "happy-dom": "^19.0.2",
+    "happy-dom": "^20.0.1",
     "prettier": "^3.6.2",
     "sass": "^1.93.2",
     "shadcn-nuxt": "^2.3.1",
