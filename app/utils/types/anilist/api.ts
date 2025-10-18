@@ -1,5 +1,6 @@
 import type { MediaSort, MediaSeason, MediaFormat, MediaStatus } from './enums'
-import type { Page, Media } from './media'
+import type { Media } from './media'
+import type { Page } from './pagination'
 
 export interface AnimeListParams {
   page?: number

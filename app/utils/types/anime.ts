@@ -53,5 +53,5 @@ export interface FallbackResult {
   media: Media[]
   total: number
   hasNextPage: boolean
-  usedSeason?: string
+  usedSeason?: MediaSeason | ''
 }

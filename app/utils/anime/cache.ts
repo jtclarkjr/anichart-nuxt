@@ -1,10 +1,10 @@
-import type { Media } from '~/utils/types/anilist'
+import type { Media, MediaSeason } from '~/utils/types/anilist'
 import type { CacheEntry } from '~/utils/types/anime'
 
 export const generateCacheKey = (
   searchQuery: string,
   selectedSort: string,
-  selectedSeason: string
+  selectedSeason: MediaSeason | ''
 ): string => {
   return `${searchQuery}-${selectedSort}-${selectedSeason}`
 }

@@ -1,4 +1,4 @@
-import type { Media } from '~/utils/types/anilist'
+import type { Media, MediaSeason } from '~/utils/types/anilist'
 import { MediaSort } from '~/utils/types/anilist'
 import { getCurrentSeason } from '~/utils/api/anime.api'
 
@@ -11,7 +11,7 @@ export const useAnimeState = () => {
   const error = useState<string>('anime.error', () => '')
   const searchQuery = useState<string>('anime.searchQuery', () => '')
   const selectedSort = useState<string>('anime.selectedSort', () => MediaSort.POPULARITY_DESC)
-  const selectedSeason = useState<string>('anime.selectedSeason', () => season)
+  const selectedSeason = useState<MediaSeason | ''>('anime.selectedSeason', () => season)
   const currentPage = useState<number>('anime.currentPage', () => 1)
   const itemsPerPage = useState<number>('anime.itemsPerPage', () => 50)
   const totalAvailable = useState<number>('anime.totalAvailable', () => 0)
