@@ -1,4 +1,5 @@
-import type { AnimeListParams, MediaSort, MediaSeason } from '~/utils/types/anilist'
+import type { AnimeListParams, MediaSort } from '~/utils/types/anilist'
+import { MediaSeason } from '~/utils/types/anilist'
 import type { AnimeQueryState } from '~/utils/types/anime'
 import { getCurrentSeason } from '~/utils/api/anime.api'
 
