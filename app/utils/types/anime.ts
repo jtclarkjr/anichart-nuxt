@@ -1,5 +1,6 @@
 import type { Ref } from 'vue'
 import type { Media, AnimeListParams } from './anilist'
+import type { MediaSeason } from './anilist/enums'
 
 export interface AnimeState {
   currentAnime: Media[]
@@ -8,7 +9,7 @@ export interface AnimeState {
   error: string
   searchQuery: string
   selectedSort: string
-  selectedSeason: string
+  selectedSeason: MediaSeason | ''
   currentPage: number
   itemsPerPage: number
   totalAvailable: number
@@ -21,7 +22,7 @@ export interface LoadContext {
   loading: Ref<boolean>
   loadingMore: Ref<boolean>
   error: Ref<string>
-  selectedSeason: Ref<string>
+  selectedSeason: Ref<MediaSeason | ''>
   totalAvailable: Ref<number>
   hasNextPage: Ref<boolean>
   currentPage: Ref<number>
@@ -39,7 +40,7 @@ export interface AnimeQueryState {
   perPage: number
   sort: string
   searchQuery: string
-  selectedSeason: string
+  selectedSeason: MediaSeason | ''
 }
 
 export interface CacheEntry {
