@@ -195,15 +195,15 @@ describe('Anime API Utils', () => {
           return new originalDate(year, month - 1, 15) // 15th of the month
         }
 
-        static now() {
+        static override now() {
           return new originalDate(year, month - 1, 15).getTime()
         }
 
-        getMonth() {
+        override getMonth() {
           return month - 1
         }
 
-        getFullYear() {
+        override getFullYear() {
           return year
         }
       } as DateConstructor
