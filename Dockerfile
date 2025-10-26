@@ -4,7 +4,7 @@
 ARG BUN_VERSION=1.2.20
 FROM oven/bun:${BUN_VERSION}-slim AS base
 
-LABEL launch_runtime="Nuxt"
+LABEL fly_launch_runtime="Nuxt"
 
 # Nuxt app lives here
 WORKDIR /app
@@ -28,7 +28,7 @@ RUN bun install
 COPY . .
 
 # Build application
-RUN bun --bun run build
+RUN bun run build
 
 
 # Final stage for app image
