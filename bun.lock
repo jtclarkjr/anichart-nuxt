@@ -29,7 +29,6 @@
         "@nuxtjs/storybook": "latest",
         "@storybook/blocks": "latest",
         "happy-dom": "latest",
-        "prettier": "latest",
         "sass": "latest",
         "shadcn-nuxt": "latest",
         "storybook": "latest",
