@@ -53,17 +53,35 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Forward the request to AniList API
-    const response = await $fetch(config.public.anilistApiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      },
-      body: JSON.stringify(body)
-    })
+    try {
+      // Forward the request to AniList API
+      const response = await $fetch(config.public.anilistApiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(body)
+      })
 
-    return response
+      return response
+    } catch (fetchError) {
+      // Handle FetchError specifically
+      if (fetchError && typeof fetchError === 'object' && 'statusCode' in fetchError) {
+        const statusCode = (fetchError as { statusCode: number }).statusCode
+
+        if (statusCode === 429) {
+          throw createError({
+            statusCode: 429,
+            statusMessage: 'Rate limit exceeded. Please slow down your requests.',
+            data: { retryAfter: 60 }
+          })
+        }
+      }
+
+      // Re-throw to outer catch
+      throw fetchError
+    }
   } catch (error) {
     // If error is already a Nuxt error, rethrow it
     if (error && typeof error === 'object' && 'statusCode' in error) {
@@ -73,19 +91,27 @@ export default defineEventHandler(async (event) => {
     // Log the error for debugging
     console.error('[GraphQL Proxy Error]', error)
 
-    // Handle rate limit errors (429)
-    if (
-      error &&
-      typeof error === 'object' &&
-      ('status' in error || 'statusCode' in error)
-    ) {
-      const status = (error as { status?: number; statusCode?: number }).status ||
-                    (error as { status?: number; statusCode?: number }).statusCode
+    // Handle rate limit errors (429) - check multiple properties
+    if (error && typeof error === 'object') {
+      const errorObj = error as {
+        status?: number
+        statusCode?: number
+        statusMessage?: string
+        message?: string
+      }
 
-      if (status === 429) {
+      if (
+        errorObj.status === 429 ||
+        errorObj.statusCode === 429 ||
+        errorObj.statusMessage?.includes('429') ||
+        errorObj.statusMessage?.includes('Too Many Requests') ||
+        errorObj.message?.includes('429') ||
+        errorObj.message?.includes('Too Many Requests')
+      ) {
         throw createError({
           statusCode: 429,
-          statusMessage: 'Too Many Requests - Rate limit exceeded. Please wait a moment.'
+          statusMessage: 'Rate limit exceeded. Please slow down your requests.',
+          data: { retryAfter: 60 }
         })
       }
     }
@@ -96,14 +122,6 @@ export default defineEventHandler(async (event) => {
         throw createError({
           statusCode: 503,
           statusMessage: 'Service Unavailable - Unable to reach AniList API'
-        })
-      }
-
-      // Check for 429 in error message
-      if (error.message.includes('429') || error.message.includes('Too Many Requests')) {
-        throw createError({
-          statusCode: 429,
-          statusMessage: 'Too Many Requests - Rate limit exceeded. Please wait a moment.'
         })
       }
     }
