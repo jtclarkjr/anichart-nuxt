@@ -1,4 +1,10 @@
-import type { AnimeListParams, MediaSeason, MediaFormat, MediaStatus, MediaSort } from '../types/anilist'
+import type {
+  AnimeListParams,
+  MediaSeason,
+  MediaFormat,
+  MediaStatus,
+  MediaSort
+} from '../types/anilist'
 
 interface QueryBuilder {
   page: (page: number) => QueryBuilder
