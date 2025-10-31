@@ -25,6 +25,16 @@ export const withRetry = async <T>(
     } catch (error) {
       lastError = error as Error
 
+      // Check if this is a rate limit error (429)
+      const isRateLimit =
+        error instanceof Error &&
+        (error.message.includes('429') || error.message.includes('Too Many Requests'))
+
+      // Don't retry on rate limit errors - throw immediately
+      if (isRateLimit) {
+        throw new NetworkError('Rate limit exceeded. Please wait a moment and try again.', error)
+      }
+
       if (attempt < opts.maxRetries - 1) {
         const delayTime = opts.exponentialBackoff ? opts.delay * Math.pow(2, attempt) : opts.delay
 

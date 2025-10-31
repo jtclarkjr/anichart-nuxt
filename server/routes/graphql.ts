@@ -73,12 +73,37 @@ export default defineEventHandler(async (event) => {
     // Log the error for debugging
     console.error('[GraphQL Proxy Error]', error)
 
+    // Handle rate limit errors (429)
+    if (
+      error &&
+      typeof error === 'object' &&
+      ('status' in error || 'statusCode' in error)
+    ) {
+      const status = (error as { status?: number; statusCode?: number }).status ||
+                    (error as { status?: number; statusCode?: number }).statusCode
+
+      if (status === 429) {
+        throw createError({
+          statusCode: 429,
+          statusMessage: 'Too Many Requests - Rate limit exceeded. Please wait a moment.'
+        })
+      }
+    }
+
     // Handle network errors
     if (error instanceof Error) {
       if (error.message.includes('fetch') || error.message.includes('ECONNREFUSED')) {
         throw createError({
           statusCode: 503,
           statusMessage: 'Service Unavailable - Unable to reach AniList API'
+        })
+      }
+
+      // Check for 429 in error message
+      if (error.message.includes('429') || error.message.includes('Too Many Requests')) {
+        throw createError({
+          statusCode: 429,
+          statusMessage: 'Too Many Requests - Rate limit exceeded. Please wait a moment.'
         })
       }
     }
