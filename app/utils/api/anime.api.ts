@@ -10,9 +10,13 @@ import type {
   Page,
   AnimeListParams,
   AnimeListResponse,
-  AnimeDetailsResponse
+  AnimeDetailsResponse,
+  MediaTitle,
+  MediaCoverImage,
+  MediaDate
 } from '../types/anilist'
 import { MediaSeason, MediaStatus } from '../types/anilist'
+import type { Nullable } from '../types/shared'
 
 // Helper function to handle GraphQL queries using Nuxt's $fetch
 const executeQuery = async <T>(
@@ -158,29 +162,21 @@ export const getCurrentSeason = (): { season: MediaSeason; year: number } => {
 /**
  * Get the display title for an anime (prefer English, fallback to Romaji)
  */
-export const getDisplayTitle = (title: {
-  romaji: string | null
-  english: string | null
-  native: string | null
-}): string => {
+export const getDisplayTitle = (title: MediaTitle): string => {
   return title.english || title.romaji || title.native || 'Unknown Title'
 }
 
 /**
  * Get a safe image URL that handles null values properly
  */
-export const getSafeImageUrl = (coverImage: {
-  extraLarge: string | null
-  large: string | null
-  medium: string | null
-}): string | undefined => {
+export const getSafeImageUrl = (coverImage: Pick<MediaCoverImage, 'extraLarge' | 'large' | 'medium'>): string | undefined => {
   return coverImage.extraLarge || coverImage.large || coverImage.medium || undefined
 }
 
 /**
  * Format anime score for display
  */
-export const formatScore = (score: number | null): string => {
+export const formatScore = (score: Nullable<number>): string => {
   if (!score) return 'N/A'
   return `${score}%`
 }
@@ -188,9 +184,7 @@ export const formatScore = (score: number | null): string => {
 /**
  * Format anime year for display
  */
-export const formatYear = (
-  startDate: { year: number | null; month: number | null; day: number | null } | null
-): string => {
+export const formatYear = (startDate: Nullable<MediaDate>): string => {
   if (!startDate?.year) return 'TBA'
   return startDate.year.toString()
 }
@@ -198,7 +192,7 @@ export const formatYear = (
 /**
  * Format anime status for display
  */
-export const formatStatus = (status: MediaStatus | null): string => {
+export const formatStatus = (status: Nullable<MediaStatus>): string => {
   if (!status) return 'Unknown'
 
   switch (status) {

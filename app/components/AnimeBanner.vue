@@ -77,11 +77,7 @@
 <script setup lang="ts">
 import { getDisplayTitle, getSafeImageUrl, formatScore, formatStatus } from '~/utils/api/anime.api'
 import { formatMediaFormat } from '~/utils/helpers/format'
-import type { Media } from '~/utils/types/anilist'
+import type { AnimeBannerProps } from './types'
 
-interface Props {
-  anime: Media
-}
-
-defineProps<Props>()
+defineProps<AnimeBannerProps>()
 </script>

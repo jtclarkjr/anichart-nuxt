@@ -1,6 +1,7 @@
 import { getAnimeDetails } from '~/utils/api/anime.api'
 import type { Media, MediaSeason } from '~/utils/types/anilist'
 import { MediaSort } from '~/utils/types/anilist'
+import type { PageResult } from '~/utils/types/responses'
 import { useAnimeState } from './useAnimeState'
 import { generateCacheKey, getCachedData } from '~/utils/anime/cache'
 import { filterSafeAnime } from '~/utils/anime/filters'
@@ -46,7 +47,7 @@ export const useAnime = () => {
   }
 
   const applyResult = (
-    result: { media?: Media[]; pageInfo?: { total?: number | null; hasNextPage?: boolean | null } },
+    result: PageResult,
     resetData: boolean
   ) => {
     const previousAnime = resetData ? [] : currentAnime.value

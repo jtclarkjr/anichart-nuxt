@@ -1,22 +1,23 @@
 import type { MediaSeason, MediaType, MediaFormat, MediaStatus, MediaSource } from './enums'
+import type { Nullable } from '../shared'
 
 export interface MediaTitle {
-  romaji: string | null
-  english: string | null
-  native: string | null
+  romaji: Nullable<string>
+  english: Nullable<string>
+  native: Nullable<string>
 }
 
 export interface MediaCoverImage {
-  extraLarge: string | null
-  large: string | null
-  medium: string | null
-  color: string | null
+  extraLarge: Nullable<string>
+  large: Nullable<string>
+  medium: Nullable<string>
+  color: Nullable<string>
 }
 
 export interface MediaDate {
-  year: number | null
-  month: number | null
-  day: number | null
+  year: Nullable<number>
+  month: Nullable<number>
+  day: Nullable<number>
 }
 
 export interface Studio {
@@ -37,28 +38,28 @@ export interface GenreStats {
 export interface Media {
   id: number
   title: MediaTitle
-  description: string | null
-  startDate: MediaDate | null
-  endDate: MediaDate | null
-  season: MediaSeason | null
-  seasonYear: number | null
+  description: Nullable<string>
+  startDate: Nullable<MediaDate>
+  endDate: Nullable<MediaDate>
+  season: Nullable<MediaSeason>
+  seasonYear: Nullable<number>
   type: MediaType
-  format: MediaFormat | null
-  status: MediaStatus | null
-  episodes: number | null
-  duration: number | null
-  chapters: number | null
-  volumes: number | null
+  format: Nullable<MediaFormat>
+  status: Nullable<MediaStatus>
+  episodes: Nullable<number>
+  duration: Nullable<number>
+  chapters: Nullable<number>
+  volumes: Nullable<number>
   genres: string[]
-  averageScore: number | null
-  meanScore: number | null
-  popularity: number | null
-  favourites: number | null
-  hashtag: string | null
+  averageScore: Nullable<number>
+  meanScore: Nullable<number>
+  popularity: Nullable<number>
+  favourites: Nullable<number>
+  hashtag: Nullable<string>
   isAdult: boolean
-  countryOfOrigin: string | null
+  countryOfOrigin: Nullable<string>
   coverImage: MediaCoverImage
-  bannerImage: string | null
-  studios: StudioConnection | null
-  source: MediaSource | null
+  bannerImage: Nullable<string>
+  studios: Nullable<StudioConnection>
+  source: Nullable<MediaSource>
 }

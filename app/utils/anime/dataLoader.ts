@@ -1,4 +1,5 @@
 import type { Media, AnimeListParams } from '~/utils/types/anilist'
+import type { PageResult } from '~/utils/types/responses'
 import type { LoadContext, LoadOptions } from '~/utils/types/anime'
 import { getAnimeList } from '~/utils/api/anime.api'
 import { filterSafeAnime } from './filters'
@@ -20,7 +21,7 @@ export const handleLoadingState = (ctx: LoadContext, resetData: boolean): void =
 
 export const processAnimeResult = (
   ctx: LoadContext,
-  result: { media?: Media[]; pageInfo?: { total?: number | null; hasNextPage?: boolean | null } },
+  result: PageResult,
   resetData: boolean,
   cacheKey: string
 ): void => {

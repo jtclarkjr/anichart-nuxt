@@ -13,11 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Media } from '~/utils/types/anilist'
+import type { AnimeDescriptionProps } from './types'
 
-interface Props {
-  anime: Media
-}
-
-defineProps<Props>()
+defineProps<AnimeDescriptionProps>()
 </script>

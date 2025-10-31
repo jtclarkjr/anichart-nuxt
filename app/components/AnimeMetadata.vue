@@ -41,13 +41,10 @@
 
 <script setup lang="ts">
 import { months } from '~/utils/constants/months'
-import type { Media, MediaSource } from '~/utils/types/anilist'
+import type { MediaSource } from '~/utils/types/anilist'
+import type { AnimeMetadataProps } from './types'
 
-interface Props {
-  anime: Media
-}
-
-defineProps<Props>()
+defineProps<AnimeMetadataProps>()
 
 const formatDate = (
   date: { year: number | null; month: number | null; day: number | null } | null

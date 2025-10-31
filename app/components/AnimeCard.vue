@@ -55,13 +55,9 @@
 <script setup lang="ts">
 import { getDisplayTitle, getSafeImageUrl, formatYear } from '~/utils/api/anime.api'
 import { formatMediaFormat } from '~/utils/helpers/format'
-import type { Media } from '~/utils/types/anilist'
+import type { AnimeCardProps } from './types'
 
-interface Props {
-  anime: Media
-}
-
-defineProps<Props>()
+defineProps<AnimeCardProps>()
 defineEmits<{
   click: [id: number]
 }>()
