@@ -169,7 +169,9 @@ export const getDisplayTitle = (title: MediaTitle): string => {
 /**
  * Get a safe image URL that handles null values properly
  */
-export const getSafeImageUrl = (coverImage: Pick<MediaCoverImage, 'extraLarge' | 'large' | 'medium'>): string | undefined => {
+export const getSafeImageUrl = (
+  coverImage: Pick<MediaCoverImage, 'extraLarge' | 'large' | 'medium'>
+): string | undefined => {
   return coverImage.extraLarge || coverImage.large || coverImage.medium || undefined
 }
 

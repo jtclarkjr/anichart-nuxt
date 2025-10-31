@@ -46,10 +46,7 @@ export const useAnime = () => {
     })
   }
 
-  const applyResult = (
-    result: PageResult,
-    resetData: boolean
-  ) => {
+  const applyResult = (result: PageResult, resetData: boolean) => {
     const previousAnime = resetData ? [] : currentAnime.value
     const filtered = filterSafeAnime(result.media ?? [])
     const newAnime = resetData ? filtered : [...previousAnime, ...filtered]

@@ -26,5 +26,7 @@ export const buildAnimeParams = (state: AnimeQueryState): AnimeListParams => {
 export const calculateSeasonYear = (selectedSeason: MediaSeason): number => {
   const { season: currentSeason, year } = getCurrentSeason()
 
-  return selectedSeason === MediaSeason.WINTER && currentSeason === MediaSeason.FALL ? year + 1 : year
+  return selectedSeason === MediaSeason.WINTER && currentSeason === MediaSeason.FALL
+    ? year + 1
+    : year
 }

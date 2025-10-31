@@ -141,7 +141,6 @@ const cleanupObserver = () => {
   }
 }
 
-
 // Build GraphQL variables from current state
 const buildVariables = (pageNum?: number) => {
   const variables: Record<string, string | number | string[]> = {

@@ -113,6 +113,6 @@ export default defineNuxtConfig({
 
   // TypeScript configuration
   typescript: {
-    typeCheck: "build"
+    typeCheck: 'build'
   }
 })
