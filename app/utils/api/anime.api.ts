@@ -10,52 +10,120 @@ import type {
   Page,
   AnimeListParams,
   AnimeListResponse,
-  AnimeDetailsResponse,
-  MediaTitle,
-  MediaCoverImage,
-  MediaDate
+  AnimeDetailsResponse
 } from '../types/anilist'
-import { MediaSeason, MediaStatus } from '../types/anilist'
-import type { Nullable } from '../types/shared'
+import { MediaSeason } from '../types/anilist'
+import { GraphQLError, NetworkError, ValidationError } from './errors'
+import { logRequest, logResponse, logError } from './interceptors'
+import { withRetry } from './retry'
+import { apiCache } from './cache'
+import {
+  getDisplayTitle,
+  getSafeImageUrl,
+  formatScore,
+  formatYear,
+  formatStatus
+} from '../helpers/formatters'
+
+// Type guards for runtime validation
+const isValidPage = (data: unknown): data is Page => {
+  return (
+    !!data &&
+    typeof data === 'object' &&
+    'pageInfo' in data &&
+    'media' in data &&
+    Array.isArray((data as Page).media)
+  )
+}
+
+const isValidMedia = (data: unknown): data is Media => {
+  return !!data && typeof data === 'object' && 'id' in data && 'title' in data
+}
+
+// Helper function to generate cache keys
+const generateCacheKey = (query: string, variables: Record<string, unknown>): string => {
+  const sortedVars = JSON.stringify(variables, Object.keys(variables).sort())
+  return `${query.slice(0, 50)}:${sortedVars}`
+}
 
 // Helper function to handle GraphQL queries using Nuxt's $fetch
 const executeQuery = async <T>(
   query: string,
   variables: Record<string, unknown> | AnimeListParams,
-  errorMessage: string
+  errorMessage: string,
+  options: { enableCache?: boolean; cacheTTL?: number; enableRetry?: boolean } = {}
 ): Promise<T> => {
-  try {
-    const data = await $fetch<T>('/graphql', {
-      method: 'POST',
-      body: {
-        query,
-        variables
-      }
-    })
+  const { enableCache = true, cacheTTL = 300000, enableRetry = true } = options
+  const startTime = Date.now()
 
-    if (!data) {
-      throw new Error('No data returned from GraphQL query')
+  // Check cache first
+  if (enableCache) {
+    const cacheKey = generateCacheKey(query, variables as Record<string, unknown>)
+    const cached = apiCache.get<T>(cacheKey)
+    if (cached) {
+      if (import.meta.dev) {
+        console.log('[API Cache Hit]', cacheKey)
+      }
+      return cached
     }
+  }
+
+  logRequest(query, variables)
+
+  const fetchData = async (): Promise<T> => {
+    try {
+      const data = await $fetch<T>('/graphql', {
+        method: 'POST',
+        body: {
+          query,
+          variables
+        }
+      })
+
+      if (!data) {
+        throw new ValidationError('No data returned from GraphQL query')
+      }
+
+      return data
+    } catch (error) {
+      logError(error, errorMessage)
+
+      if (error instanceof Error) {
+        if (error.message.includes('fetch') || error.message.includes('network')) {
+          throw new NetworkError(errorMessage, error)
+        }
+        throw new GraphQLError(errorMessage, error)
+      }
+
+      throw new GraphQLError(`${errorMessage}: Unknown error`)
+    }
+  }
+
+  try {
+    const data = enableRetry ? await withRetry(fetchData) : await fetchData()
+
+    logResponse(data, startTime)
+
+    // Cache the result
+    if (enableCache) {
+      const cacheKey = generateCacheKey(query, variables as Record<string, unknown>)
+      apiCache.set(cacheKey, data, cacheTTL)
+    }
+
     return data
   } catch (error) {
-    console.error(`${errorMessage}:`, error)
-    // Log more details about the error for debugging
-    if (error instanceof Error) {
-      console.error('Error details:', {
-        message: error.message,
-        stack: error.stack,
-        variables,
-        query: query.slice(0, 200) // First 200 chars of query
-      })
-    }
-    throw new Error(`${errorMessage}: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    logError(error, `${errorMessage} - Final attempt failed`)
+    throw error
   }
 }
 
 // Helper function to extract Page data with validation
 const extractPageData = (data: AnimeListResponse | undefined): Page => {
   if (!data?.Page) {
-    throw new Error('No data received from API')
+    throw new ValidationError('No data received from API')
+  }
+  if (!isValidPage(data.Page)) {
+    throw new ValidationError('Invalid API response structure for Page')
   }
   return data.Page
 }
@@ -63,7 +131,10 @@ const extractPageData = (data: AnimeListResponse | undefined): Page => {
 // Helper function to extract Media data with validation
 const extractMediaData = (data: AnimeDetailsResponse | undefined): Media => {
   if (!data?.Media) {
-    throw new Error('No anime data received from API')
+    throw new ValidationError('No anime data received from API')
+  }
+  if (!isValidMedia(data.Media)) {
+    throw new ValidationError('Invalid API response structure for Media')
   }
   return data.Media
 }
@@ -159,58 +230,20 @@ export const getCurrentSeason = (): { season: MediaSeason; year: number } => {
   return { season, year }
 }
 
-/**
- * Get the display title for an anime (prefer English, fallback to Romaji)
- */
-export const getDisplayTitle = (title: MediaTitle): string => {
-  return title.english || title.romaji || title.native || 'Unknown Title'
+// Re-export formatter functions for backward compatibility
+export { getDisplayTitle, getSafeImageUrl, formatScore, formatYear, formatStatus }
+
+// Cache management utilities
+export const clearApiCache = (): void => {
+  apiCache.clear()
 }
 
-/**
- * Get a safe image URL that handles null values properly
- */
-export const getSafeImageUrl = (
-  coverImage: Pick<MediaCoverImage, 'extraLarge' | 'large' | 'medium'>
-): string | undefined => {
-  return coverImage.extraLarge || coverImage.large || coverImage.medium || undefined
+export const invalidateCache = (pattern: string | RegExp): number => {
+  return apiCache.invalidate(pattern)
 }
 
-/**
- * Format anime score for display
- */
-export const formatScore = (score: Nullable<number>): string => {
-  if (!score) return 'N/A'
-  return `${score}%`
-}
-
-/**
- * Format anime year for display
- */
-export const formatYear = (startDate: Nullable<MediaDate>): string => {
-  if (!startDate?.year) return 'TBA'
-  return startDate.year.toString()
-}
-
-/**
- * Format anime status for display
- */
-export const formatStatus = (status: Nullable<MediaStatus>): string => {
-  if (!status) return 'Unknown'
-
-  switch (status) {
-    case MediaStatus.FINISHED:
-      return 'Completed'
-    case MediaStatus.RELEASING:
-      return 'Airing'
-    case MediaStatus.NOT_YET_RELEASED:
-      return 'Upcoming'
-    case MediaStatus.CANCELLED:
-      return 'Cancelled'
-    case MediaStatus.HIATUS:
-      return 'Hiatus'
-    default:
-      return status
-  }
+export const getCacheSize = (): number => {
+  return apiCache.size()
 }
 
 // For backward compatibility, export all functions as AnimeApi object
@@ -225,5 +258,8 @@ export const AnimeApi = {
   getSafeImageUrl,
   formatScore,
   formatYear,
-  formatStatus
+  formatStatus,
+  clearCache: clearApiCache,
+  invalidateCache,
+  getCacheSize
 }
