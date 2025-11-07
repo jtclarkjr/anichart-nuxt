@@ -83,29 +83,26 @@ export default defineNuxtConfig({
     // Configure domains for external images (useful for anime images)
     domains: ['anilist.co', 's4.anilist.co', 'cdn.myanimelist.net'],
     // Cache images for better performance
-    // presets: {
-    //   avatar: {
-    //     modifiers: {
-    //       width: 150,
-    //       height: 150,
-    //       fit: 'cover'
-    //     }
-    //   },
-    //   cover: {
-    //     modifiers: {
-    //       width: 600,
-    //       height: 900,
-    //       fit: 'cover'
-    //     }
-    //   },
-    //   banner: {
-    //     modifiers: {
-    //       width: 1200,
-    //       height: 400,
-    //       fit: 'cover'
-    //     }
-    //   }
-    // }
+    presets: {
+      avatar: {
+        modifiers: {
+          width: 150,
+          height: 150
+        }
+      },
+      cover: {
+        modifiers: {
+          width: 600,
+          height: 900
+        }
+      },
+      banner: {
+        modifiers: {
+          width: 1200,
+          height: 400
+        }
+      }
+    }
   },
 
   // TypeScript configuration
