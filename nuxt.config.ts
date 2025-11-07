@@ -86,26 +86,20 @@ export default defineNuxtConfig({
     presets: {
       avatar: {
         modifiers: {
-          format: 'webp',
           width: 150,
-          height: 150,
-          fit: 'cover'
+          height: 150
         }
       },
       cover: {
         modifiers: {
-          format: 'webp',
           width: 600,
-          height: 900,
-          fit: 'cover'
+          height: 900
         }
       },
       banner: {
         modifiers: {
-          format: 'webp',
           width: 1200,
-          height: 400,
-          fit: 'cover'
+          height: 400
         }
       }
     }
