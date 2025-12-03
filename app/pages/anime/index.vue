@@ -164,8 +164,14 @@ const buildVariables = (pageNum?: number) => {
   if (selectedSeason.value) {
     variables.season = selectedSeason.value
     const { season: currentSeason, year } = getCurrentSeason()
+    // When selecting Winter season:
+    // - If currently in Fall or Winter, use next year (Winter 2026)
+    // - Otherwise, use current year
     variables.seasonYear =
-      selectedSeason.value === 'WINTER' && currentSeason === MediaSeason.FALL ? year + 1 : year
+      selectedSeason.value === 'WINTER' &&
+      (currentSeason === MediaSeason.FALL || currentSeason === MediaSeason.WINTER)
+        ? year + 1
+        : year
   }
 
   return variables
