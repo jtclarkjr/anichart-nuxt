@@ -23,7 +23,7 @@ export const trySeasonalFallbacks = async (
 
   for (const fallbackSeason of fallbackSeasons) {
     const seasonYear =
-      fallbackSeason === MediaSeason.WINTER && currentSeason !== MediaSeason.WINTER
+      fallbackSeason === MediaSeason.WINTER && currentSeason === MediaSeason.FALL
         ? year + 1
         : year
 

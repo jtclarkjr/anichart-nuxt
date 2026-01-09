@@ -27,10 +27,9 @@ export const calculateSeasonYear = (selectedSeason: MediaSeason): number => {
   const { season: currentSeason, year } = getCurrentSeason()
 
   // When selecting Winter season:
-  // - If currently in Fall or Winter, use next year (Winter 2026)
+  // - If currently in Fall, use next year (Fall 2025 -> Winter 2026)
   // - Otherwise, use current year
-  return selectedSeason === MediaSeason.WINTER &&
-    (currentSeason === MediaSeason.FALL || currentSeason === MediaSeason.WINTER)
+  return selectedSeason === MediaSeason.WINTER && currentSeason === MediaSeason.FALL
     ? year + 1
     : year
 }
