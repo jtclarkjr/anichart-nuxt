@@ -22,10 +22,19 @@ export const trySeasonalFallbacks = async (
   const fallbackSeasons = getFallbackSeasons(currentSeason)
 
   for (const fallbackSeason of fallbackSeasons) {
-    const seasonYear =
-      fallbackSeason === MediaSeason.WINTER && currentSeason === MediaSeason.FALL
-        ? year + 1
-        : year
+    // Season year logic:
+    // - If currently Winter and fallback is Summer/Fall: use previous year
+    // - If currently Fall and fallback is Winter: use next year
+    // - Otherwise: use current year
+    let seasonYear = year
+    if (
+      currentSeason === MediaSeason.WINTER &&
+      (fallbackSeason === MediaSeason.SUMMER || fallbackSeason === MediaSeason.FALL)
+    ) {
+      seasonYear = year - 1
+    } else if (fallbackSeason === MediaSeason.WINTER && currentSeason === MediaSeason.FALL) {
+      seasonYear = year + 1
+    }
 
     const result = await getAnimeList({
       ...baseParams,
