@@ -90,18 +90,31 @@ const availableSeasons = computed(() => {
     FALL: 'Fall'
   } as const
 
-  // Show previous year's seasons (Spring, Summer, Fall) since current year hasn't aired yet
-  const previousYearSeasons = ['SPRING', 'SUMMER', 'FALL'] as const
-  for (const seasonKey of previousYearSeasons) {
-    seasons.push({
-      value: seasonKey,
-      label: `${seasonNames[seasonKey]} ${year - 1}`
-    })
-  }
+  // Season year logic based on current season:
+  // - If Winter: Spring is upcoming (current year), Summer/Fall are previous year
+  // - If Spring: Summer/Fall are current year, Winter is current year
+  // - If Summer: Fall is current year, Spring was current year, Winter is current year
+  // - If Fall: Spring/Summer were current year, Winter is next year
 
-  // Winter handling:
-  // - If currently Fall: show next year's Winter (Fall 2025 -> Winter 2026)
-  // - If currently Winter/Spring/Summer: show current year's Winter
+  // Spring
+  seasons.push({
+    value: 'SPRING',
+    label: `${seasonNames.SPRING} ${currentSeason === 'WINTER' ? year : year - 1}`
+  })
+
+  // Summer
+  seasons.push({
+    value: 'SUMMER',
+    label: `${seasonNames.SUMMER} ${currentSeason === 'WINTER' ? year - 1 : year}`
+  })
+
+  // Fall
+  seasons.push({
+    value: 'FALL',
+    label: `${seasonNames.FALL} ${currentSeason === 'WINTER' ? year - 1 : year}`
+  })
+
+  // Winter
   if (currentSeason === 'FALL') {
     seasons.push({
       value: 'WINTER',
