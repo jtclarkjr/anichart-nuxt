@@ -72,7 +72,7 @@ const handleFilterChange = () => {
 
 const handleSearch = debounce(() => {
   if (import.meta.client) window.scrollTo(0, 0)
-}, 500) // Reduced from 1000ms to 500ms for better responsiveness
+}, 800) // Increased to 800ms to avoid hitting rate limits
 
 // Reference to the AnimeGrid component
 const animeGridRef = ref<InstanceType<typeof AnimeGrid> | null>(null)
