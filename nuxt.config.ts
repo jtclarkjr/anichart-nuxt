@@ -13,7 +13,9 @@ export default defineNuxtConfig({
 
   // Vite configuration
   vite: {
-    plugins: [tailwindcss()],
+    // Type assertion needed due to Vite plugin version incompatibility between Nuxt 4 and @tailwindcss/vite
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    plugins: [tailwindcss()] as any,
     css: {
       preprocessorOptions: {
         scss: {
