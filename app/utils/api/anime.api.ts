@@ -48,7 +48,7 @@ const executeQuery = async <T>(
         query: query.slice(0, 200) // First 200 chars of query
       })
     }
-    throw new Error(`${errorMessage}: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    throw new Error(`${errorMessage}: ${error instanceof Error ? error.message : 'Unknown error'}`, { cause: error })
   }
 }
 
