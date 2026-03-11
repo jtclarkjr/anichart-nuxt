@@ -55,7 +55,7 @@ export default defineNuxtConfig({
   },
 
   // Modules
-  modules: ['@nuxt/eslint', '@nuxt/image', '@nuxt/icon', 'shadcn-nuxt'], // Disabled '@nuxtjs/storybook' due to version compatibility issues
+  modules: ['@nuxt/eslint', '@nuxt/image', '@nuxt/icon', 'shadcn-nuxt', '@vercel/analytics/nuxt'], // Disabled '@nuxtjs/storybook' due to version compatibility issues
 
   // Component configuration
   components: {
