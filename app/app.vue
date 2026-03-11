@@ -19,6 +19,6 @@
 </template>
 
 <script setup lang="ts">
-import { Analytics } from '@vercel/analytics/nuxt'
+import Analytics from '@vercel/analytics/nuxt'
 // Route transition control can be added here if desired
 </script>
