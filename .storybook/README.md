@@ -1,6 +1,7 @@
 # Storybook for Nuxt
 
-This project uses the official `@nuxtjs/storybook` module for component development and documentation.
+This project uses the official `@nuxtjs/storybook` module for component development and
+documentation.
 
 ## Running Storybook
 
@@ -22,7 +23,8 @@ bun run build-storybook
 
 ## Story Files
 
-Story files are located alongside your components in the `app/` directory with the `.stories.ts` extension.
+Story files are located alongside your components in the `app/` directory with the `.stories.ts`
+extension.
 
 ### Example Story Files Created:
 

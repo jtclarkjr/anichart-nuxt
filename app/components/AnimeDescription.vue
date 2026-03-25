@@ -1,5 +1,4 @@
 <template>
-  <!-- eslint-disable vue/no-v-html -->
   <section>
     <h2 class="pb-2 mb-6 text-2xl font-semibold text-foreground border-b-2 border-primary">
       Description

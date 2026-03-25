@@ -1,0 +1,28 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["vue", "typescript", "unicorn"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn"
+  },
+  "rules": {
+    "no-unused-vars": "off",
+    "typescript/no-unused-vars": "error",
+    "typescript/no-explicit-any": "error"
+  },
+  "overrides": [
+    {
+      "files": ["app/**/*.{ts,vue}", "server/**/*.ts"],
+      "rules": {
+        "no-nested-ternary": "error"
+      }
+    },
+    {
+      "files": ["app/components/ui/**/*.{ts,vue}", "**/*.stories.{ts,vue}"],
+      "rules": {
+        "no-nested-ternary": "off"
+      }
+    }
+  ],
+  "ignorePatterns": [".nuxt", ".output", ".nitro", "dist", "node_modules", "storybook-static"]
+}

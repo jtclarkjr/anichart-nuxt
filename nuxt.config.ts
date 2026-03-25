@@ -14,7 +14,7 @@ export default defineNuxtConfig({
   // Vite configuration
   vite: {
     // Type assertion needed due to Vite plugin version incompatibility between Nuxt 4 and @tailwindcss/vite
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // oxlint-disable-next-line typescript-eslint/no-explicit-any
     plugins: [tailwindcss()] as any,
     css: {
       preprocessorOptions: {
@@ -55,7 +55,7 @@ export default defineNuxtConfig({
   },
 
   // Modules
-  modules: ['@nuxt/eslint', '@nuxt/image', '@nuxt/icon', 'shadcn-nuxt', '@vercel/analytics/nuxt'], // Disabled '@nuxtjs/storybook' due to version compatibility issues
+  modules: ['@nuxt/image', '@nuxt/icon', 'shadcn-nuxt', '@vercel/analytics/nuxt'], // Disabled '@nuxtjs/storybook' due to version compatibility issues
 
   // Component configuration
   components: {

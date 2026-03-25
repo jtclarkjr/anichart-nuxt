@@ -1,6 +1,7 @@
 # AniChart
 
-A modern anime discovery and exploration web application built with Nuxt 4. Browse, search, and discover anime with detailed information sourced from the AniList GraphQL API.
+A modern anime discovery and exploration web application built with Nuxt 4. Browse, search, and
+discover anime with detailed information sourced from the AniList GraphQL API.
 
 ## Features
 
@@ -8,7 +9,8 @@ A modern anime discovery and exploration web application built with Nuxt 4. Brow
 - **Smart Filtering**: Filter by season, year, popularity, ratings, and more
 - **Responsive Design**: Optimized for desktop and mobile devices
 - **Infinite Scroll**: Seamless browsing experience with automatic content loading
-- **Detailed Information**: Complete anime metadata including descriptions, ratings, and studio information
+- **Detailed Information**: Complete anime metadata including descriptions, ratings, and studio
+  information
 - **Modern UI**: Clean, accessible interface with smooth animations and transitions
 - **Performance Optimized**: Server-side rendering, image optimization, and efficient caching
 

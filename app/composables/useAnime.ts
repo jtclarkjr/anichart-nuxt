@@ -139,9 +139,9 @@ export const useAnime = () => {
   const loadAnimeDetails = async (id: number): Promise<Media> => {
     try {
       return await getAnimeDetails(id)
-    } catch (error) {
-      console.error('Error loading anime details:', error)
-      throw error
+    } catch (err) {
+      console.error('Error loading anime details:', err)
+      throw err
     }
   }
 
