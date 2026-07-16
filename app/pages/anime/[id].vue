@@ -30,47 +30,26 @@
 </template>
 
 <script setup lang="ts">
-import type { Media, GraphQLResponse, AnimeDetailsResponse } from '~/utils/types/anilist'
-import { GET_ANIME_DETAILS } from '~/utils/api/queries'
+import { useAnimeDetailsQuery } from '~/composables/useAnimeDetailsQuery'
 
 const route = useRoute()
 const idParam = computed(() => Number(route.params.id))
 
-const { data, error, refresh } = await useAsyncData(`anime-${idParam.value}`, async () => {
-  const id = idParam.value
-  if (!Number.isFinite(id)) throw createError({ statusCode: 400, statusMessage: 'Invalid ID' })
+if (!Number.isInteger(idParam.value) || idParam.value <= 0) {
+  throw createError({ statusCode: 400, statusMessage: 'Invalid ID' })
+}
 
-  const response = await $fetch<GraphQLResponse<AnimeDetailsResponse>>('/graphql', {
-    method: 'POST',
-    body: {
-      query: GET_ANIME_DETAILS,
-      variables: { id }
-    }
-  })
-
-  if (response.errors) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: response.errors[0]?.message || 'GraphQL error'
-    })
-  }
-
-  if (!response.data) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'No data returned from GraphQL query'
-    })
-  }
-
-  return response.data.Media
-})
-
-const anime = computed<Media | null>(() => (data.value as Media) || null)
+const detailsQuery = useAnimeDetailsQuery(idParam)
+const anime = detailsQuery.data
 const errorMessage = computed<string | null>(() =>
-  error.value ? 'Failed to load anime details. Please try again.' : null
+  detailsQuery.isError.value && !anime.value
+    ? 'Failed to load anime details. Please try again.'
+    : null
 )
 
+onServerPrefetch(() => detailsQuery.suspense())
+
 const refreshDetails = async () => {
-  await refresh()
+  await detailsQuery.refetch()
 }
 </script>

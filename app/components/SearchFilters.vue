@@ -58,29 +58,16 @@
 </template>
 
 <script setup lang="ts">
-import { getCurrentSeason } from '~/utils/api/anime.api'
 import { MediaSort } from '~/utils/types/anilist'
+import type { MediaSeason } from '~/utils/types/anilist'
+import type { SearchFiltersEmits, SearchFiltersProps } from './types'
 
-interface Props {
-  searchQuery: string
-  selectedSort: string // Now using string to match composable
-  selectedSeason: string // Now using string to match composable
-  loading?: boolean // Optional loading state
-}
-
-interface Emits {
-  'update:searchQuery': [value: string]
-  'update:selectedSort': [value: string]
-  'update:selectedSeason': [value: string]
-  filterChange: []
-}
-
-const props = defineProps<Props>()
-const emit = defineEmits<Emits>()
+const props = defineProps<SearchFiltersProps>()
+const emit = defineEmits<SearchFiltersEmits>()
 
 // Available seasons based on current time of year
 const availableSeasons = computed(() => {
-  const { season: currentSeason, year } = getCurrentSeason()
+  const { season: currentSeason, year } = props.seasonContext
   const seasons = []
 
   const seasonNames = {
@@ -131,14 +118,14 @@ const availableSeasons = computed(() => {
 })
 
 // Computed properties for v-model binding
-const seasonModel = computed({
+const seasonModel = computed<MediaSeason | ''>({
   get: () => props.selectedSeason,
-  set: (value: string) => emit('update:selectedSeason', value)
+  set: (value) => emit('update:selectedSeason', value)
 })
 
-const sortModel = computed({
+const sortModel = computed<MediaSort>({
   get: () => props.selectedSort,
-  set: (value: string) => emit('update:selectedSort', value)
+  set: (value) => emit('update:selectedSort', value)
 })
 
 const searchModel = computed({

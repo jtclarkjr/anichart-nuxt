@@ -77,7 +77,7 @@ export const GET_ANIME_LIST = `
 // Query for getting detailed information about a specific anime
 export const GET_ANIME_DETAILS = `
   query GetAnimeDetails($id: Int!) {
-    Media(id: $id, type: ANIME) {
+    Media(id: $id, type: ANIME, isAdult: false) {
       id
       title {
         romaji

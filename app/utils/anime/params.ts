@@ -1,30 +1,44 @@
-import type { AnimeListParams, MediaSort } from '~/utils/types/anilist'
-import { MediaSeason } from '~/utils/types/anilist'
-import type { AnimeQueryState } from '~/utils/types/anime'
-import { getCurrentSeason } from '~/utils/api/anime.api'
+import type { AnimeListParams } from '~/utils/types/anilist'
+import { MediaSeason, MediaSort } from '~/utils/types/anilist'
+import type { AnimeListQueryFilters, AnimeSeasonContext } from '~/utils/types/anime'
+import { getCurrentSeason } from '~/utils/helpers/date'
 
-export const buildAnimeParams = (state: AnimeQueryState): AnimeListParams => {
+export const normalizeSearchQuery = (query: string): string => {
+  return query
+    .trim()
+    .replace(/[\u00a0\u2000-\u200b\u2028-\u2029\u3000]/g, ' ')
+    .replace(/\s+/g, ' ')
+}
+
+export const buildAnimeListParams = (
+  filters: AnimeListQueryFilters,
+  page: number
+): AnimeListParams => {
+  const search = normalizeSearchQuery(filters.search)
   const params: AnimeListParams = {
-    page: state.page,
-    perPage: state.perPage,
-    sort: [state.sort as MediaSort],
+    page,
+    perPage: filters.perPage,
+    sort: search ? [MediaSort.SEARCH_MATCH, filters.sort] : [filters.sort],
     isAdult: false
   }
 
-  if (state.searchQuery.trim()) {
-    params.search = state.searchQuery.trim()
+  if (search) {
+    params.search = search
   }
 
-  if (state.selectedSeason) {
-    params.season = state.selectedSeason
-    params.seasonYear = calculateSeasonYear(state.selectedSeason)
+  if (filters.season && filters.seasonYear !== null) {
+    params.season = filters.season
+    params.seasonYear = filters.seasonYear
   }
 
   return params
 }
 
-export const calculateSeasonYear = (selectedSeason: MediaSeason): number => {
-  const { season: currentSeason, year } = getCurrentSeason()
+export const calculateSeasonYear = (
+  selectedSeason: MediaSeason,
+  context: AnimeSeasonContext = getCurrentSeason()
+): number => {
+  const { season: currentSeason, year } = context
 
   // Season year logic:
   // - If currently Winter and selecting Summer/Fall: use previous year (Winter 2026 -> Summer 2025)

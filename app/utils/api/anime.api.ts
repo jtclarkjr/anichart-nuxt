@@ -1,57 +1,60 @@
-import {
-  GET_ANIME_LIST,
-  GET_ANIME_DETAILS,
-  SEARCH_ANIME,
-  GET_TRENDING_ANIME,
-  GET_SEASONAL_ANIME
-} from './queries'
+import { GET_ANIME_LIST, GET_ANIME_DETAILS } from './queries'
 import type {
   Media,
   Page,
   AnimeListParams,
+  GraphQLResponse,
   AnimeListResponse,
   AnimeDetailsResponse,
   MediaTitle,
   MediaCoverImage,
   MediaDate
 } from '../types/anilist'
-import { MediaSeason, MediaStatus } from '../types/anilist'
+import { MediaSeason, MediaSort, MediaStatus } from '../types/anilist'
 import type { Nullable } from '../types/shared'
+import type { AnimeApiRequestOptions } from '../types/anime'
+import { getCurrentSeason } from '../helpers/date'
+import { filterSafeAnime } from '../anime/filters'
+import { AnimeApiError, isAbortError, toAnimeApiError } from './errors'
+
+export { getCurrentSeason }
 
 // Helper function to handle GraphQL queries using Nuxt's $fetch
 const executeQuery = async <T>(
   query: string,
   variables: Record<string, unknown> | AnimeListParams,
-  errorMessage: string
+  errorMessage: string,
+  options: AnimeApiRequestOptions = {}
 ): Promise<T> => {
   try {
-    const data = await $fetch<T>('/graphql', {
+    const response = await $fetch<GraphQLResponse<T>>('/graphql', {
       method: 'POST',
       body: {
         query,
         variables
-      }
+      },
+      signal: options.signal
     })
 
-    if (!data) {
-      throw new Error('No data returned from GraphQL query')
+    if (response.errors?.length) {
+      throw new AnimeApiError(
+        `${errorMessage}: ${response.errors.map((error) => error.message).join('; ')}`,
+        { retryable: false }
+      )
     }
-    return data
-  } catch (error) {
-    console.error(`${errorMessage}:`, error)
-    // Log more details about the error for debugging
-    if (error instanceof Error) {
-      console.error('Error details:', {
-        message: error.message,
-        stack: error.stack,
-        variables,
-        query: query.slice(0, 200) // First 200 chars of query
+
+    if (!response.data) {
+      throw new AnimeApiError(`${errorMessage}: No data returned from GraphQL query`, {
+        retryable: false
       })
     }
-    throw new Error(
-      `${errorMessage}: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      { cause: error }
-    )
+
+    return response.data
+  } catch (error) {
+    if (!isAbortError(error)) {
+      console.error(`${errorMessage}:`, error)
+    }
+    throw toAnimeApiError(error, errorMessage)
   }
 }
 
@@ -74,25 +77,38 @@ const extractMediaData = (data: AnimeDetailsResponse | undefined): Media => {
 /**
  * Get a list of anime with optional filtering and pagination
  */
-export const getAnimeList = async (params: AnimeListParams = {}): Promise<Page> => {
+export const getAnimeList = async (
+  params: AnimeListParams = {},
+  options: AnimeApiRequestOptions = {}
+): Promise<Page> => {
   const data = await executeQuery<AnimeListResponse>(
     GET_ANIME_LIST,
-    params,
-    'Failed to fetch anime list'
+    { ...params, isAdult: false },
+    'Failed to fetch anime list',
+    options
   )
-  return extractPageData(data)
+  const page = extractPageData(data)
+  return { ...page, media: filterSafeAnime(page.media) }
 }
 
 /**
  * Get detailed information about a specific anime
  */
-export const getAnimeDetails = async (id: number): Promise<Media> => {
+export const getAnimeDetails = async (
+  id: number,
+  options: AnimeApiRequestOptions = {}
+): Promise<Media> => {
   const data = await executeQuery<AnimeDetailsResponse>(
     GET_ANIME_DETAILS,
     { id },
-    'Failed to fetch anime details'
+    'Failed to fetch anime details',
+    options
   )
-  return extractMediaData(data)
+  const media = extractMediaData(data)
+  if (filterSafeAnime([media]).length === 0) {
+    throw new AnimeApiError('Anime details are unavailable', { retryable: false })
+  }
+  return media
 }
 
 /**
@@ -103,24 +119,23 @@ export const searchAnime = async (
   page: number = 1,
   perPage: number = 20
 ): Promise<Page> => {
-  const data = await executeQuery<AnimeListResponse>(
-    SEARCH_ANIME,
-    { search, page, perPage },
-    'Failed to search anime'
-  )
-  return extractPageData(data)
+  return getAnimeList({
+    search,
+    page,
+    perPage,
+    sort: [MediaSort.SEARCH_MATCH, MediaSort.POPULARITY_DESC]
+  })
 }
 
 /**
  * Get trending anime
  */
 export const getTrendingAnime = async (page: number = 1, perPage: number = 20): Promise<Page> => {
-  const data = await executeQuery<AnimeListResponse>(
-    GET_TRENDING_ANIME,
-    { page, perPage },
-    'Failed to fetch trending anime'
-  )
-  return extractPageData(data)
+  return getAnimeList({
+    page,
+    perPage,
+    sort: [MediaSort.TRENDING_DESC, MediaSort.POPULARITY_DESC]
+  })
 }
 
 /**
@@ -132,34 +147,7 @@ export const getSeasonalAnime = async (
   page: number = 1,
   perPage: number = 20
 ): Promise<Page> => {
-  const data = await executeQuery<AnimeListResponse>(
-    GET_SEASONAL_ANIME,
-    { season, seasonYear, page, perPage },
-    'Failed to fetch seasonal anime'
-  )
-  return extractPageData(data)
-}
-
-/**
- * Get current season and year
- */
-export const getCurrentSeason = (): { season: MediaSeason; year: number } => {
-  const now = new Date()
-  const month = now.getMonth() + 1 // getMonth() returns 0-11
-  const year = now.getFullYear()
-
-  let season: MediaSeason
-  if (month >= 12 || month <= 2) {
-    season = MediaSeason.WINTER
-  } else if (month >= 3 && month <= 5) {
-    season = MediaSeason.SPRING
-  } else if (month >= 6 && month <= 8) {
-    season = MediaSeason.SUMMER
-  } else {
-    season = MediaSeason.FALL
-  }
-
-  return { season, year }
+  return getAnimeList({ season, seasonYear, page, perPage })
 }
 
 /**

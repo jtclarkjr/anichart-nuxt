@@ -57,26 +57,10 @@
 </template>
 
 <script setup lang="ts">
-import type { Media } from '~/utils/types/anilist'
+import type { AnimeGridEmits, AnimeGridProps } from './types'
 
-interface Props {
-  anime: Media[]
-  loading: boolean
-  loadingMore?: boolean
-  error: string
-  hasData: boolean
-  hasMoreToShow: boolean
-  totalCount: number
-}
-
-interface Emits {
-  animeClick: [id: number]
-  retry: []
-  loadMore: []
-}
-
-const props = defineProps<Props>()
-defineEmits<Emits>()
+const props = defineProps<AnimeGridProps>()
+defineEmits<AnimeGridEmits>()
 
 // Track if we're in SSR or post-hydration for consistent rendering
 const isHydrated = useState('animeGrid.isHydrated', () => false)
