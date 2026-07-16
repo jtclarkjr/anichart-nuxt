@@ -1,5 +1,7 @@
 <template>
   <div class="min-h-screen bg-background">
+    <BackToListButton />
+
     <div v-if="errorMessage" class="p-12 text-destructive text-center">
       <p>{{ errorMessage }}</p>
       <Button class="mt-4 px-6 py-3 text-base" @click="() => refreshDetails()">Retry</Button>
